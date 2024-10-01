@@ -1,5 +1,5 @@
 from sqlalchemy import Column, ForeignKey, Integer, MetaData, String, Table
-from sqlalchemy.orm import registry
+from sqlalchemy.orm import registry, relationship
 
 from cats.domain.models import Breed, Cat
 
@@ -26,4 +26,6 @@ breeds = Table(
 
 mapper_registry = registry()
 mapper_registry.map_imperatively(Breed, breeds)
-mapper_registry.map_imperatively(Cat, cats)
+mapper_registry.map_imperatively(
+    Cat, cats, properties={"breed": relationship(Breed)}
+)
