@@ -12,7 +12,9 @@ cats = Table(
     Column("color", String),
     Column("age", Integer),
     Column("description", String),
-    Column("breed_id", ForeignKey("breeds.id"), nullable=True),
+    Column(
+        "breed_id", ForeignKey("breeds.id", ondelete="CASCADE"), nullable=True
+    ),
 )
 
 breeds = Table(
