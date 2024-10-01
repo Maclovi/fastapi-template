@@ -25,17 +25,12 @@ class CatRepository(CatRepositoryProtocol):
         recieved_cat = (await self.session.execute(stmt)).scalar()
         return recieved_cat if recieved_cat else None
 
-    async def add(self, cat: Cat) -> Cat:
-        async with self.session.begin():
-            self.session.add(cat)
-        return cat
+    async def add(self, cat: Cat) -> None:
+        self.session.add(cat)
 
-    async def update(self, cat: Cat) -> Cat:
-        async with self.session.begin():
-            await self.session.merge(cat)
-        return cat
+    async def update(self, cat: Cat) -> None:
+        await self.session.merge(cat)
 
     async def delete_by_id(self, id: int) -> None:
         stmt = select(cats).where(cats.c.id == id)
-        async with self.session.begin():
-            await self.session.execute(stmt)
+        await self.session.execute(stmt)
