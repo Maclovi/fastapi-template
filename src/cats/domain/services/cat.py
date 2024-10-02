@@ -12,10 +12,12 @@ class CatService:
         self._uow = uow
 
     async def get_all(self) -> list[Cat]:
-        return await self._repository.get_all()  # type: ignore[no-any-return]
+        results: list[Cat] = await self._repository.get_all()
+        return results
 
     async def get_by_breed(self, breed: str) -> list[Cat]:
-        return await self._repository.get_by_breed(breed)  # type: ignore[no-any-return]
+        results: list[Cat] = await self._repository.get_by_breed(breed)
+        return results
 
     async def get_by_id(self, id: int) -> Cat | None:
         return await self._repository.get_by_id(id)
