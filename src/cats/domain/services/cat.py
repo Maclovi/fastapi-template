@@ -25,11 +25,14 @@ class CatService:
     async def add(self, cat: Cat) -> None:
         async with self._uow:
             await self._repository.add(cat)
+            await self._uow.commit()
 
     async def update(self, cat: Cat) -> None:
         async with self._uow:
             await self._repository.update(cat)
+            await self._uow.commit()
 
     async def delete_by_id(self, id: int) -> None:
         async with self._uow:
             await self._repository.delete_by_id(id)
+            await self._uow.commit()

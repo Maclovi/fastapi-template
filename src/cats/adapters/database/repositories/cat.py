@@ -4,7 +4,7 @@ from typing import Any
 from sqlalchemy import Row, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from cats.adapters.database.models import cats
+from cats.adapters.database.models import breeds, cats
 from cats.domain.models import Cat
 from cats.domain.protocols.cat import CatRepositoryProtocol
 
@@ -26,13 +26,13 @@ class CatRepository(CatRepositoryProtocol):
         return [self._load_cat(row) for row in rows]
 
     async def get_all(self) -> list[Cat]:
-        stmt = select(cats)
+        stmt = select(cats).join(breeds)
         result = await self._session.execute(stmt)
 
         return self._load_cats(result.all())
 
     async def get_by_breed(self, breed: str) -> list[Cat]:
-        stmt = select(cats).where(cats.c.breed == breed)
+        stmt = select(cats).join(breeds).where(breeds.c.title == breed)
         result = await self._session.execute(stmt)
 
         return self._load_cats(result.all())
