@@ -10,20 +10,30 @@ cats_router = APIRouter(prefix="/cats")
 
 @cats_router.get("/all", response_model=list[Cat])
 async def get_all() -> list[Cat]:
+    logger.info("Getting all cats")
     return [
-        Cat(color="red", age=5, description="cat1", breed=None),
+        Cat(id=1, color="red", age=5, description="cat1", breed=None),
         Cat(
-            color="blue", age=10, description="cat2", breed=Breed(title="muy")
+            id=2,
+            color="blue",
+            age=10,
+            description="cat2",
+            breed=Breed(id=1, title="muy"),
         ),
     ]
 
 
 @cats_router.get("/breed/{breed}", response_model=list[Cat])
 async def get_by_breed(breed: str) -> list[Cat]:
+    logger.info(f"Getting cats with breed: {breed}")
     return [
-        Cat(color="red", age=5, description="cat1", breed=None),
+        Cat(id=1, color="red", age=5, description="cat1", breed=None),
         Cat(
-            color="blue", age=10, description="cat2", breed=Breed(title="muy")
+            id=2,
+            color="blue",
+            age=10,
+            description="cat2",
+            breed=Breed(id=1, title="muy"),
         ),
     ]
 
@@ -31,7 +41,7 @@ async def get_by_breed(breed: str) -> list[Cat]:
 @cats_router.get("/id/{id}", response_model=Cat)
 async def get_by_id(id: int) -> Cat:
     logger.info(f"Getting cat with id: {id}")
-    return Cat(color="red", age=5, description="cat1", breed=None)
+    return Cat(id=1, color="red", age=5, description="cat1", breed=None)
 
 
 @cats_router.post(
