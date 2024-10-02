@@ -1,0 +1,13 @@
+.venv/
+venv/
+tests/
+build/
+**loader.egg-info/
+
+# cache
+.mypy_cache
+.ruff_cache
+.pytest_cache
+.git
+.github
+**__pycache__
