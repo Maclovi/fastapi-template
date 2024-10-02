@@ -9,9 +9,9 @@ cats = Table(
     "cats",
     mapper_registry.metadata,
     Column("id", Integer, primary_key=True),
-    Column("color", String),
-    Column("age", Integer),
-    Column("description", String),
+    Column("color", String, nullable=False),
+    Column("age", Integer, nullable=False),
+    Column("description", String, nullable=False),
     Column(
         "breed_id", ForeignKey("breeds.id", ondelete="CASCADE"), nullable=True
     ),
@@ -21,7 +21,7 @@ breeds = Table(
     "breeds",
     mapper_registry.metadata,
     Column("id", Integer, primary_key=True),
-    Column("title", String),
+    Column("title", String, nullable=False),
 )
 
 mapper_registry.map_imperatively(Breed, breeds)
