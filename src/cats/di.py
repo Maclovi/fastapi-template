@@ -27,7 +27,6 @@ def create_engine() -> AsyncEngine:
     db_uri = os.getenv("POSTGRES_URI")
     if not db_uri:
         raise ValueError("POSTGRES_URI is not set")
-    db_uri = "postgresql+psycopg" + db_uri.replace("postgres", "", 1)
 
     return create_async_engine(
         db_uri,
