@@ -43,7 +43,11 @@ class CatRepository(CatRepositoryProtocol):
         return self._load_cats(result.all())
 
     async def get_by_id(self, id: int) -> Cat | None:
-        stmt = select(cats, breeds.c.title).join(breeds).where(cats.c.id == id)
+        stmt = (
+            select(cats, breeds.c.title)
+            .join(breeds, isouter=True)
+            .where(cats.c.id == id)
+        )
         result = (await self._session.execute(stmt)).one_or_none()
 
         return self._load_cat(result) if result else None
