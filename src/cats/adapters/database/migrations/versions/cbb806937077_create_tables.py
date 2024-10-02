@@ -23,15 +23,15 @@ def upgrade() -> None:
     op.create_table(
         "breeds",
         sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("title", sa.String(), nullable=True),
+        sa.Column("title", sa.String(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_table(
         "cats",
         sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("color", sa.String(), nullable=True),
-        sa.Column("age", sa.Integer(), nullable=True),
-        sa.Column("description", sa.String(), nullable=True),
+        sa.Column("color", sa.String(), nullable=False),
+        sa.Column("age", sa.Integer(), nullable=False),
+        sa.Column("description", sa.String(), nullable=False),
         sa.Column("breed_id", sa.Integer(), nullable=True),
         sa.ForeignKeyConstraint(
             ["breed_id"], ["breeds.id"], ondelete="CASCADE"
