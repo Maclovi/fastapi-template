@@ -2,12 +2,15 @@ from collections.abc import AsyncIterator
 from functools import partial
 from logging import getLogger
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
+
+from cats.adapters.depends_stub import Stub
+from cats.domain.protocols.uow import UoWProtocol
 
 logger = getLogger(__name__)
 
@@ -30,9 +33,16 @@ async def new_session(
         yield session
 
 
+def new_uow(
+    session: AsyncSession = Depends(Stub(AsyncSession)),
+) -> AsyncSession:
+    return session
+
+
 def init_dependencies(app: FastAPI) -> None:
     session_maker = create_async_sessionmaker("")
 
     app.dependency_overrides[AsyncSession] = partial(
         new_session, session_maker
     )
+    app.dependency_overrides[UoWProtocol] = new_uow
