@@ -31,9 +31,6 @@ test = [
 ]
 types = [
     "mypy",
-    # mypy extensions
-    "types-setuptools",
-    "types-redis",
 ]
 lint = [
     "cats[types]",
@@ -74,6 +71,7 @@ ignore_missing_imports = true
 
 warn_unused_ignores = false
 warn_return_any = true
+warn_redundant_casts = true
 
 allow_untyped_calls = true
 allow_subclassing_any = true
