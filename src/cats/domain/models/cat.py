@@ -5,6 +5,7 @@ from . import Breed
 
 @dataclass
 class Cat:
+    id: int
     color: str
     age: int
     description: str
