@@ -1,4 +1,7 @@
-from sqlalchemy import select
+from collections.abc import Sequence
+from typing import Any
+
+from sqlalchemy import Row, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from cats.adapters.database.models import breeds
@@ -8,9 +11,15 @@ from cats.domain.protocols import BreedRepositoryProtocol
 
 class BreedRepository(BreedRepositoryProtocol):
     def __init__(self, session: AsyncSession) -> None:
-        self.session = session
+        self._session = session
 
-    async def get_all_breeds(self) -> list[Breed]:
+    def _load_breed(self, row: Row[Any]) -> Breed:
+        return Breed(id=row.id, title=row.title)
+
+    def _load_breeds(self, rows: Sequence[Row[Any]]) -> list[Breed]:
+        return [self._load_breed(row) for row in rows]
+
+    async def get_all(self) -> list[Breed]:
         stmt = select(breeds)
-        recieved_breeds = await self.session.execute(stmt)
-        return list(recieved_breeds.scalars().all())
+        recieved_breeds = await self._session.execute(stmt)
+        return self._load_breeds(recieved_breeds.all())
