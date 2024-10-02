@@ -1,9 +1,10 @@
+import os
 from collections.abc import AsyncIterator
 from functools import partial
-from logging import getLogger
 
 from fastapi import Depends, FastAPI
 from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
@@ -12,17 +13,25 @@ from sqlalchemy.ext.asyncio import (
 from cats.adapters.depends_stub import Stub
 from cats.domain.protocols.uow import UoWProtocol
 
-logger = getLogger(__name__)
 
+def create_engine() -> AsyncEngine:
+    db_uri = os.getenv("POSTGRES_URI")
+    if not db_uri:
+        raise ValueError("POSTGRES_URI is not set")
+    db_uri = "postgresql+psycopg" + db_uri.replace("postgres", "", 1)
 
-def create_async_sessionmaker(db_uri: str) -> async_sessionmaker[AsyncSession]:
-    engine = create_async_engine(
+    return create_async_engine(
         db_uri,
         echo=True,
         pool_size=15,
         max_overflow=15,
         connect_args={"connect_timeout": 5},
     )
+
+
+def create_async_sessionmaker(
+    engine: AsyncEngine,
+) -> async_sessionmaker[AsyncSession]:
     return async_sessionmaker(engine, autoflush=False, expire_on_commit=False)
 
 
@@ -40,7 +49,8 @@ def new_uow(
 
 
 def init_dependencies(app: FastAPI) -> None:
-    session_maker = create_async_sessionmaker("")
+    engine = create_engine()
+    session_maker = create_async_sessionmaker(engine)
 
     app.dependency_overrides[AsyncSession] = partial(
         new_session, session_maker
