@@ -10,8 +10,17 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+from cats.adapters.database.repositories import BreedRepository, CatRepository
 from cats.adapters.depends_stub import Stub
-from cats.domain.protocols.uow import UoWProtocol
+from cats.domain.services import BreedService, CatService
+
+
+class CatServiceProvider:
+    pass
+
+
+class BreedServiceProvider:
+    pass
 
 
 def create_engine() -> AsyncEngine:
@@ -42,10 +51,16 @@ async def new_session(
         yield session
 
 
-def new_uow(
+def cat_provider(
     session: AsyncSession = Depends(Stub(AsyncSession)),
-) -> AsyncSession:
-    return session
+) -> CatService:
+    return CatService(CatRepository(session), session)
+
+
+def breed_provider(
+    session: AsyncSession = Depends(Stub(AsyncSession)),
+) -> BreedService:
+    return BreedService(BreedRepository(session), session)
 
 
 def init_dependencies(app: FastAPI) -> None:
@@ -55,4 +70,5 @@ def init_dependencies(app: FastAPI) -> None:
     app.dependency_overrides[AsyncSession] = partial(
         new_session, session_maker
     )
-    app.dependency_overrides[UoWProtocol] = new_uow
+    app.dependency_overrides[CatServiceProvider] = cat_provider
+    app.dependency_overrides[BreedServiceProvider] = breed_provider
