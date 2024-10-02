@@ -2,7 +2,7 @@ from typing import Any
 
 from fastapi import APIRouter, Request
 
-index_router = APIRouter()
+index_router = APIRouter(tags=["Main"])
 
 
 @index_router.get("/")
