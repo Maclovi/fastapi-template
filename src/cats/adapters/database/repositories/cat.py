@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from cats.adapters.database.models import breeds, cats
 from cats.domain.models import Cat
+from cats.domain.models.breed import Breed
 from cats.domain.protocols.cat import CatRepositoryProtocol
 
 
@@ -19,26 +20,30 @@ class CatRepository(CatRepositoryProtocol):
             color=row.color,
             age=row.age,
             description=row.description,
-            breed=row.breed,
+            breed=Breed(row.breed_id, row.title),
         )
 
     def _load_cats(self, rows: Sequence[Row[Any]]) -> list[Cat]:
         return [self._load_cat(row) for row in rows]
 
     async def get_all(self) -> list[Cat]:
-        stmt = select(cats).join(breeds)
+        stmt = select(cats, breeds.c.title).join(breeds, isouter=True)
         result = await self._session.execute(stmt)
 
         return self._load_cats(result.all())
 
     async def get_by_breed(self, breed: str) -> list[Cat]:
-        stmt = select(cats).join(breeds).where(breeds.c.title == breed)
+        stmt = (
+            select(cats, breeds.c.title)
+            .join(breeds, isouter=True)
+            .where(breeds.c.title == breed)
+        )
         result = await self._session.execute(stmt)
 
         return self._load_cats(result.all())
 
     async def get_by_id(self, id: int) -> Cat | None:
-        stmt = select(cats).where(cats.c.id == id)
+        stmt = select(cats, breeds.c.title).join(breeds).where(cats.c.id == id)
         result = (await self._session.execute(stmt)).one_or_none()
 
         return self._load_cat(result) if result else None
