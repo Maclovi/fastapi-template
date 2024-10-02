@@ -1,13 +1,13 @@
-from sqlalchemy import Column, ForeignKey, Integer, MetaData, String, Table
+from sqlalchemy import Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import registry, relationship
 
 from cats.domain.models import Breed, Cat
 
-metadata = MetaData()
+mapper_registry = registry()
 
 cats = Table(
     "cats",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True),
     Column("color", String),
     Column("age", Integer),
@@ -19,12 +19,11 @@ cats = Table(
 
 breeds = Table(
     "breeds",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True),
     Column("title", String),
 )
 
-mapper_registry = registry()
 mapper_registry.map_imperatively(Breed, breeds)
 mapper_registry.map_imperatively(
     Cat, cats, properties={"breed": relationship(Breed)}
