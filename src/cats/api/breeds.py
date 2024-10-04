@@ -7,10 +7,10 @@ from cats.domain.models import Breed
 from cats.domain.services import BreedService
 
 logger = getLogger(__name__)
-breeds_router = APIRouter(prefix="/breeds", tags=["Breeds"])
+router = APIRouter(prefix="/breeds", tags=["Breeds"])
 
 
-@breeds_router.get("/all", response_model=list[Breed])
+@router.get("/all", response_model=list[Breed])
 async def get_all_breeds(
     service: BreedService = Depends(BreedServiceProvider),
 ) -> list[Breed]:

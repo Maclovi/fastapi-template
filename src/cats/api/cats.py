@@ -7,10 +7,10 @@ from cats.domain.models import Cat
 from cats.domain.services import CatService
 
 logger = getLogger(__name__)
-cats_router = APIRouter(prefix="/cats", tags=["Cats"])
+router = APIRouter(prefix="/cats", tags=["Cats"])
 
 
-@cats_router.get("/all", response_model=list[Cat])
+@router.get("/all", response_model=list[Cat], summary="Get all cats")
 async def get_all(
     service: CatService = Depends(CatServiceProvider),
 ) -> list[Cat]:
@@ -19,7 +19,9 @@ async def get_all(
     return results
 
 
-@cats_router.get("/breed/{breed}", response_model=list[Cat])
+@router.get(
+    "/breed/{breed}", response_model=list[Cat], summary="Get cats by breed"
+)
 async def get_by_breed(
     breed: str, service: CatService = Depends(CatServiceProvider)
 ) -> list[Cat]:
@@ -29,7 +31,7 @@ async def get_by_breed(
     return results
 
 
-@cats_router.get("/id/{id}", response_model=Cat)
+@router.get("/{id}", response_model=Cat, summary="Get cat by id")
 async def get_by_id(
     id: int, service: CatService = Depends(CatServiceProvider)
 ) -> Cat:
@@ -41,9 +43,7 @@ async def get_by_id(
     return result
 
 
-@cats_router.post(
-    "/add", response_model=Cat, status_code=status.HTTP_201_CREATED
-)
+@router.post("/add", status_code=status.HTTP_201_CREATED, summary="Add cat")
 async def add(
     cat: Cat, service: CatService = Depends(CatServiceProvider)
 ) -> dict[str, str]:
@@ -53,7 +53,7 @@ async def add(
     return {"message": "cat added"}
 
 
-@cats_router.put("/update")
+@router.put("/update", summary="Update cat")
 async def update(
     cat: Cat, service: CatService = Depends(CatServiceProvider)
 ) -> dict[str, str]:
@@ -63,7 +63,7 @@ async def update(
     return {"message": "cat updated"}
 
 
-@cats_router.delete("/delete/{id}")
+@router.delete("/{id}/delete", summary="Delete cat by id")
 async def delete_by_id(
     id: int, service: CatService = Depends(CatServiceProvider)
 ) -> dict[str, str]:

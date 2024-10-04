@@ -10,9 +10,9 @@ logger = getLogger(__name__)
 
 def create_app() -> FastAPI:
     app = FastAPI()
-    app.include_router(cats.cats_router)
-    app.include_router(breeds.breeds_router)
-    app.include_router(index.index_router)
+    app.include_router(cats.router)
+    app.include_router(breeds.router)
+    app.include_router(index.router)
     init_dependencies(app)
     logger.info("App created")
 
