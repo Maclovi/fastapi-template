@@ -2,7 +2,7 @@
 venv/
 tests/
 build/
-**loader.egg-info/
+**cats.egg-info/
 
 # cache
 .mypy_cache

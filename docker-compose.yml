@@ -1,13 +1,4 @@
 services:
-  # backend:
-  #   build: .
-  #   restart: always
-  #   ports:
-  #     - "8000:8000"
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-
   postgres:
     image: postgres:alpine
     restart: always
@@ -15,8 +6,6 @@ services:
       - POSTGRES_DB=defaultdb
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    ports:
-      - "127.0.0.1:5432:5432"
     volumes:
        - postgres:/data/postgres
     healthcheck:
@@ -24,6 +13,18 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  backend:
+    build: .
+    command: bash -c 'alembic upgrade head && uvicorn --factory cats.app:create_app --host 0.0.0.0 --port 8000'
+    environment:
+      - POSTGRES_URI=postgresql+psycopg://postgres:postgres@postgres:5432/defaultdb
+    ports:
+      - 127.0.0.1:8000:8000
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 
 volumes:
   postgres:
