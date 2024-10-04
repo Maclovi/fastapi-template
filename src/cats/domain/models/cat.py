@@ -1,6 +1,6 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
-from . import Breed
+from cats.domain.models.breed import Breed
 
 
 @dataclass
@@ -9,4 +9,4 @@ class Cat:
     color: str
     age: int
     description: str
-    breed: Breed | None
+    breed: Breed | None = field(default=None)

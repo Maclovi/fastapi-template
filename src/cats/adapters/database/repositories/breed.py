@@ -14,7 +14,7 @@ class BreedRepository(BreedRepositoryProtocol):
         self._session = session
 
     def _load_breed(self, row: Row[Any]) -> Breed:
-        return Breed(id=row.id, title=row.title)
+        return Breed(title=row.title)
 
     def _load_breeds(self, rows: Sequence[Row[Any]]) -> list[Breed]:
         return [self._load_breed(row) for row in rows]
@@ -23,3 +23,9 @@ class BreedRepository(BreedRepositoryProtocol):
         stmt = select(breeds)
         recieved_breeds = await self._session.execute(stmt)
         return self._load_breeds(recieved_breeds.all())
+
+    async def create(self, breed: Breed) -> None:
+        self._session.add(breed)
+
+    def add(self, breed: Breed) -> None:
+        self._session.add(breed)

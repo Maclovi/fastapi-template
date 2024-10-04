@@ -53,7 +53,9 @@ async def new_session(
 def cat_provider(
     session: AsyncSession = Depends(Stub(AsyncSession)),
 ) -> CatService:
-    return CatService(CatRepository(session), session)
+    return CatService(
+        CatRepository(session), BreedRepository(session), session
+    )
 
 
 def breed_provider(

@@ -1,7 +1,7 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
 class Breed:
-    id: int
+    id: int = field(init=False)
     title: str

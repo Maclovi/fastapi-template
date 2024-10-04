@@ -5,26 +5,30 @@ from cats.domain.models import Breed, Cat
 
 mapper_registry = registry()
 
-cats = Table(
-    "cats",
-    mapper_registry.metadata,
-    Column("id", Integer, primary_key=True),
-    Column("color", String, nullable=False),
-    Column("age", Integer, nullable=False),
-    Column("description", String, nullable=False),
-    Column(
-        "breed_id", ForeignKey("breeds.id", ondelete="CASCADE"), nullable=True
-    ),
-)
-
 breeds = Table(
     "breeds",
     mapper_registry.metadata,
-    Column("id", Integer, primary_key=True),
-    Column("title", String, nullable=False),
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("title", String(30), nullable=False),
 )
+
+cats = Table(
+    "cats",
+    mapper_registry.metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("color", String(30), nullable=False),
+    Column("age", Integer, nullable=False),
+    Column("description", String(200), nullable=False),
+    Column(
+        "breed_id",
+        Integer,
+        ForeignKey("breeds.id", ondelete="SET NULL"),
+        nullable=True,
+    ),
+)
+
 
 mapper_registry.map_imperatively(Breed, breeds)
 mapper_registry.map_imperatively(
-    Cat, cats, properties={"breed": relationship(Breed)}
+    Cat, cats, properties={"breed": relationship("Breed")}
 )

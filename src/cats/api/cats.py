@@ -2,6 +2,7 @@ from logging import getLogger
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from cats.adapters.schemes.catinput import CatInput
 from cats.di import CatServiceProvider
 from cats.domain.models import Cat
 from cats.domain.services import CatService
@@ -10,7 +11,7 @@ logger = getLogger(__name__)
 router = APIRouter(prefix="/cats", tags=["Cats"])
 
 
-@router.get("/all", response_model=list[Cat], summary="Get all cats")
+@router.get("/", response_model=list[Cat], summary="Get all cats")
 async def get_all(
     service: CatService = Depends(CatServiceProvider),
 ) -> list[Cat]:
@@ -28,6 +29,8 @@ async def get_by_breed(
     logger.info(f"Getting cats with breed: {breed}")
 
     results: list[Cat] = await service.get_by_breed(breed)
+    if not results:
+        raise HTTPException(status_code=404, detail="cats not found")
     return results
 
 
@@ -45,25 +48,30 @@ async def get_by_id(
 
 @router.post("/add", status_code=status.HTTP_201_CREATED, summary="Add cat")
 async def add(
-    cat: Cat, service: CatService = Depends(CatServiceProvider)
+    cat: CatInput, service: CatService = Depends(CatServiceProvider)
 ) -> dict[str, str]:
     logger.info(f"Adding cat: {cat}")
 
-    await service.add(cat)
-    return {"message": "cat added"}
+    try:
+        await service.add(cat.to_model())
+        return {"message": "cat added"}
+    except Exception:
+        raise HTTPException(  # noqa: B904
+            status_code=status.HTTP_409_CONFLICT, detail="cat already exists"
+        )
 
 
 @router.put("/update", summary="Update cat")
 async def update(
-    cat: Cat, service: CatService = Depends(CatServiceProvider)
+    cat: CatInput, service: CatService = Depends(CatServiceProvider)
 ) -> dict[str, str]:
     logger.info(f"Updating cat: {cat}")
 
-    await service.update(cat)
+    await service.update(cat.to_model())
     return {"message": "cat updated"}
 
 
-@router.delete("/{id}/delete", summary="Delete cat by id")
+@router.delete("/delete/{id}", summary="Delete cat by id")
 async def delete_by_id(
     id: int, service: CatService = Depends(CatServiceProvider)
 ) -> dict[str, str]:

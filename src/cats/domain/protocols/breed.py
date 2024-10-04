@@ -7,3 +7,6 @@ from cats.domain.models import Breed
 class BreedRepositoryProtocol(Protocol):
     @abstractmethod
     async def get_all(self) -> list[Breed]: ...
+
+    @abstractmethod
+    def add(self, breed: Breed) -> None: ...

@@ -20,7 +20,7 @@ class CatRepository(CatRepositoryProtocol):
             color=row.color,
             age=row.age,
             description=row.description,
-            breed=Breed(row.breed_id, row.title),
+            breed=Breed(row.title) if row.title else None,
         )
 
     def _load_cats(self, rows: Sequence[Row[Any]]) -> list[Cat]:
@@ -52,7 +52,7 @@ class CatRepository(CatRepositoryProtocol):
 
         return self._load_cat(result) if result else None
 
-    async def add(self, cat: Cat) -> None:
+    def add(self, cat: Cat) -> None:
         self._session.add(cat)
 
     async def update(self, cat: Cat) -> None:
