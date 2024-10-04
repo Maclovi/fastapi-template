@@ -3,7 +3,6 @@
 ## Installation
 ### Requirements
 - Python 3.12 or higher
-- PostgreSQL 17 or higher
 - Docker & Docker-compose latest
 ### Cloning the Repository
 
