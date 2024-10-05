@@ -11,7 +11,7 @@ logger = getLogger(__name__)
 router = APIRouter(prefix="/cats", tags=["Cats"])
 
 
-@router.get("/", response_model=list[Cat], summary="Get all cats")
+@router.get("/", summary="Get all cats")
 async def get_all(
     service: CatService = Depends(CatServiceProvider),
 ) -> list[Cat]:
@@ -20,9 +20,7 @@ async def get_all(
     return results
 
 
-@router.get(
-    "/breed/{breed}", response_model=list[Cat], summary="Get cats by breed"
-)
+@router.get("/breed/{breed}", summary="Get cats by breed")
 async def get_by_breed(
     breed: str, service: CatService = Depends(CatServiceProvider)
 ) -> list[Cat]:
@@ -34,7 +32,7 @@ async def get_by_breed(
     return results
 
 
-@router.get("/{id}", response_model=Cat, summary="Get cat by id")
+@router.get("/{id}", summary="Get cat by id")
 async def get_by_id(
     id: int, service: CatService = Depends(CatServiceProvider)
 ) -> Cat:

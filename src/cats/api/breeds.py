@@ -10,7 +10,7 @@ logger = getLogger(__name__)
 router = APIRouter(prefix="/breeds", tags=["Breeds"])
 
 
-@router.get("/", response_model=list[Breed])
+@router.get("/")
 async def get_all_breeds(
     service: BreedService = Depends(BreedServiceProvider),
 ) -> list[Breed]:
