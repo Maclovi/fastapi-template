@@ -43,17 +43,16 @@ lint_optional = [
     "codespell",
 ]
 lint_full = [
-    "cats[lint,extralint]",
+    "cats[lint,lint_optional]",
 ]
 dev = ["cats[test,lint_full]"]
-devmin = ["cats[test, lint_optional]"]
+devmin = ["cats[test,lint_optional]"]
 
 [project.urls]
 Homepage = "https://github.com/Maclovi/cats"
 Documentation = "https://github.com/Maclovi/README.md"
 Repository = "https://github.com/Maclovi/cats"
 Issues = "https://github.com/Maclovi/cats/issues"
-# Changelog = "https://fastapi.tiangolo.com/release-notes/" -- uncomment if there is 
 
 
 [tool.pytest.ini_options]
