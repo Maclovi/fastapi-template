@@ -16,11 +16,11 @@ services:
 
   backend:
     build: .
+    environment:
+      - POSTGRES_URI=postgresql+psycopg://postgres:postgres@postgres:5432/defaultdb
     command: >
       bash -c "alembic upgrade head
       && uvicorn --factory cats.web:create_app --host 0.0.0.0 --port 8000"
-    environment:
-      - POSTGRES_URI=postgresql+psycopg://postgres:postgres@postgres:5432/defaultdb
     ports:
       - 127.0.0.1:8000:8000
     depends_on:
