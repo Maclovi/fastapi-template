@@ -2,13 +2,12 @@ import os
 from collections.abc import AsyncIterator
 
 import pytest
-from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 
 from cats.adapters.database.models import mapper_registry
-from cats.api import breeds, cats, index
-from cats.di import create_async_sessionmaker, create_engine, init_dependencies
+from cats.di import create_async_sessionmaker, create_engine
+from cats.web import create_app
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -43,10 +42,5 @@ async def create_all_tables(engine: AsyncEngine) -> AsyncIterator[None]:
 
 @pytest.fixture(scope="session")
 def client() -> TestClient:
-    app = FastAPI()
-    app.include_router(index.router)
-    app.include_router(cats.router)
-    app.include_router(breeds.router)
-    init_dependencies(app)
-
+    app = create_app()
     return TestClient(app)
