@@ -2,7 +2,7 @@
 
 ## Installation
 ### Requirements
-- Python 3.12 or higher
+- Git
 - Docker & Docker-compose latest
 ### Cloning the Repository
 
@@ -19,7 +19,6 @@ Just:
 docker-compose up
 ```
 ## How to use
-Follow this link and test the API:
-[swagger](http://localhost:8000/docs)
+Follow this [swagger](http://localhost:8000/docs) link and test the API
 ## Author
 **Sergey** - [GitHub Profile](https://github.com/Maclovi)
