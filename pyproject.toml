@@ -121,6 +121,7 @@ ignore = [
     "B008",  # do not perform function calls in argument defaults
     "C901",  # too complex
     "W191",  # indentation contains tabs
+    "B904",  # raise exception with a string
 ]
 
 [tool.ruff.format]
