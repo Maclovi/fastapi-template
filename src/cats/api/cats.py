@@ -53,10 +53,11 @@ async def add(
     try:
         await service.add(cat.to_model())
         return {"message": "cat added"}
-    except Exception:
-        raise HTTPException(  # noqa: B904
-            status_code=status.HTTP_409_CONFLICT, detail="cat already exists"
-        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="cat already exists",
+        ) from e
 
 
 @router.put("/update", summary="Update cat")

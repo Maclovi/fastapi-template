@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:alpine
-    restart: always
+    restart: unless-stopped
     environment:
       - POSTGRES_DB=defaultdb
       - POSTGRES_USER=postgres
@@ -16,6 +16,7 @@ services:
 
   backend:
     build: .
+    restart: unless-stopped
     environment:
       - POSTGRES_URI=postgresql+psycopg://postgres:postgres@postgres:5432/defaultdb
     command: >
