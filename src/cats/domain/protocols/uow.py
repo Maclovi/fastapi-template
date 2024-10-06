@@ -10,6 +10,9 @@ class UoWProtocol(Protocol):
     async def flush(self) -> None: ...
 
     @abstractmethod
+    async def refresh(self, obj: Any) -> Any: ...
+
+    @abstractmethod
     async def rollback(self) -> None: ...
 
     @abstractmethod

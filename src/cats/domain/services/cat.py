@@ -1,6 +1,6 @@
 import logging
 
-from cats.domain.models import Cat, Breed
+from cats.domain.models import Cat
 from cats.domain.protocols import (
     BreedRepositoryProtocol,
     CatRepositoryProtocol,
@@ -35,7 +35,22 @@ class CatService:
         return await self._cat_repository.get_by_id(id)
 
     async def add(self, cat: Cat) -> None:
-        self._cat_repository.add(cat)
+        if cat.breed:
+            async with self._uow as nested_uow:
+                try:
+                    self._breed_repository.add(cat.breed)
+                    await nested_uow.commit()
+                except Exception as exc:
+                    logger.error(exc)
+                    await nested_uow.rollback()
+
+                    breed = await self._breed_repository.get_by_title(
+                        cat.breed.title
+                    )
+                    if breed:
+                        cat.breed.id = breed.id
+
+        await self._cat_repository.add(cat)
         await self._uow.commit()
 
     async def update(self, cat: Cat) -> None:
