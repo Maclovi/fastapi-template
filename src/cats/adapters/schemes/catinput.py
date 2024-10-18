@@ -5,9 +5,9 @@ from cats.domain.models import Breed, Cat
 
 class CatInput(BaseModel):
     id: int
-    color: str
+    color: str = Field(max_length=30)
     age: int
-    description: str
+    description: str = Field(max_length=200)
     breed: str | None = Field(default=None)
 
     def to_model(self) -> Cat:

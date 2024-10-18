@@ -41,9 +41,8 @@ class CatService:
                     self._breed_repository.add(cat.breed)
                     await nested_uow.commit()
                 except Exception as exc:
-                    logger.error(exc)
                     await nested_uow.rollback()
-
+                    logger.error(exc)
                     breed = await self._breed_repository.get_by_title(
                         cat.breed.title
                     )
@@ -54,6 +53,7 @@ class CatService:
         await self._uow.commit()
 
     async def update(self, cat: Cat) -> None:
+        # TODO: fix statement
         await self._cat_repository.update(cat)
         await self._uow.commit()
 

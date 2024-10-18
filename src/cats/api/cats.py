@@ -1,20 +1,18 @@
 from logging import getLogger
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from dishka.integrations.fastapi import DishkaRoute, FromDishka
+from fastapi import APIRouter, HTTPException, status
 
 from cats.adapters.schemes.catinput import CatInput
-from cats.di import CatServiceProvider
 from cats.domain.models import Cat
 from cats.domain.services import CatService
 
 logger = getLogger(__name__)
-router = APIRouter(prefix="/cats", tags=["Cats"])
+router = APIRouter(prefix="/cats", tags=["Cats"], route_class=DishkaRoute)
 
 
 @router.get("/", summary="Get all cats")
-async def get_all(
-    service: CatService = Depends(CatServiceProvider),
-) -> list[Cat]:
+async def get_all(service: FromDishka[CatService]) -> list[Cat]:
     logger.info("Getting all cats")
     results: list[Cat] = await service.get_all()
     return results
@@ -22,7 +20,7 @@ async def get_all(
 
 @router.get("/breed/{breed}", summary="Get cats by breed")
 async def get_by_breed(
-    breed: str, service: CatService = Depends(CatServiceProvider)
+    breed: str, service: FromDishka[CatService]
 ) -> list[Cat]:
     logger.info(f"Getting cats with breed: {breed}")
 
@@ -33,9 +31,7 @@ async def get_by_breed(
 
 
 @router.get("/{id}", summary="Get cat by id")
-async def get_by_id(
-    id: int, service: CatService = Depends(CatServiceProvider)
-) -> Cat:
+async def get_by_id(id: int, service: FromDishka[CatService]) -> Cat:
     logger.info(f"Getting cat with id: {id}")
 
     result = await service.get_by_id(id)
@@ -46,7 +42,7 @@ async def get_by_id(
 
 @router.post("/add", status_code=status.HTTP_201_CREATED, summary="Add cat")
 async def add(
-    cat: CatInput, service: CatService = Depends(CatServiceProvider)
+    cat: CatInput, service: FromDishka[CatService]
 ) -> dict[str, str]:
     logger.info(f"Adding cat: {cat}")
 
@@ -61,7 +57,7 @@ async def add(
 
 @router.put("/update", summary="Update cat")
 async def update(
-    cat: CatInput, service: CatService = Depends(CatServiceProvider)
+    cat: CatInput, service: FromDishka[CatService]
 ) -> dict[str, str]:
     logger.info(f"Updating cat: {cat}")
 
@@ -71,7 +67,7 @@ async def update(
 
 @router.delete("/delete/{id}", summary="Delete cat by id")
 async def delete_by_id(
-    id: int, service: CatService = Depends(CatServiceProvider)
+    id: int, service: FromDishka[CatService]
 ) -> dict[str, str]:
     logger.info(f"Deleting cat with id: {id}")
 
