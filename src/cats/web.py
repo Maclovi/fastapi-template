@@ -1,19 +1,33 @@
-from logging import getLogger
+import logging
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 
+from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 
 from cats.api import breeds, cats, index
-from cats.di import init_dependencies
+from cats.ioc import init_async_container
 
-logger = getLogger(__name__)
+logger = logging.getLogger(__name__)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    yield None
+    await app.state.dishka_container.close()
 
 
 def create_app() -> FastAPI:
-    app = FastAPI()
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s  %(process)-7s %(module)-20s %(message)s",
+    )
+    container = init_async_container()
+    app = FastAPI(lifespan=lifespan)
     app.include_router(cats.router)
     app.include_router(breeds.router)
     app.include_router(index.router)
-    init_dependencies(app)
-    logger.info("App created")
+    setup_dishka(container, app)
 
+    logger.info("App created")
     return app
