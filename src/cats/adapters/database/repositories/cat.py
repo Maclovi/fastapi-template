@@ -65,6 +65,7 @@ class CatRepository(CatRepositoryProtocol):
         await self._session.execute(stmt)
 
     async def update(self, cat: Cat) -> None:
+        del cat.breed
         await self._session.merge(cat)
 
     async def delete_by_id(self, id: int) -> None:
