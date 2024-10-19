@@ -1,8 +1,8 @@
-"""create table
+"""init tables
 
-Revision ID: 1a24a3d07071
+Revision ID: 2c4f4df1942c
 Revises:
-Create Date: 2024-10-04 19:44:03.543725
+Create Date: 2024-10-19 12:51:24.476696
 
 """
 
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "1a24a3d07071"
+revision: str = "2c4f4df1942c"
 down_revision: str | None = None
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
@@ -24,7 +24,20 @@ def upgrade() -> None:
         "breeds",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.Column("title", sa.String(length=30), nullable=False),
+        sa.Column(
+            "created_at",
+            sa.DateTime(),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.Column(
+            "updated_at",
+            sa.DateTime(),
+            server_default=sa.text("now()"),
+            nullable=True,
+        ),
         sa.PrimaryKeyConstraint("id"),
+        sa.UniqueConstraint("title"),
     )
     op.create_table(
         "cats",
@@ -33,6 +46,18 @@ def upgrade() -> None:
         sa.Column("age", sa.Integer(), nullable=False),
         sa.Column("description", sa.String(length=200), nullable=False),
         sa.Column("breed_id", sa.Integer(), nullable=True),
+        sa.Column(
+            "created_at",
+            sa.DateTime(),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.Column(
+            "updated_at",
+            sa.DateTime(),
+            server_default=sa.text("now()"),
+            nullable=True,
+        ),
         sa.ForeignKeyConstraint(
             ["breed_id"], ["breeds.id"], ondelete="SET NULL"
         ),
