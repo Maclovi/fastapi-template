@@ -48,12 +48,10 @@ class CatService:
                     )
                     if breed:
                         cat.breed.id = breed.id
-
         await self._cat_repository.add(cat)
         await self._uow.commit()
 
     async def update(self, cat: Cat) -> None:
-        # TODO: fix statement
         await self._cat_repository.update(cat)
         await self._uow.commit()
 

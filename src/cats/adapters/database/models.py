@@ -45,7 +45,6 @@ breeds_table = Table(
         nullable=True,
     ),
 )
-
 cats_table = Table(
     "cats",
     mapper_registry.metadata,

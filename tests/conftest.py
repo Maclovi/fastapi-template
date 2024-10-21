@@ -40,8 +40,6 @@ async def session(container: AsyncContainer) -> AsyncIterator[AsyncSession]:
 async def create_all_tables(engine: AsyncEngine) -> AsyncIterator[None]:
     async with engine.begin() as conn:
         await conn.run_sync(mapper_registry.metadata.create_all)
-
     yield None
-
     async with engine.begin() as conn:
         await conn.run_sync(mapper_registry.metadata.drop_all)

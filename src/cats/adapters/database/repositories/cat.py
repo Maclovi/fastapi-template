@@ -31,7 +31,6 @@ class CatRepository(CatRepositoryProtocol):
             breeds_table, isouter=True
         )
         result = await self._session.execute(stmt)
-
         return self._load_cats(result.all())
 
     async def get_by_breed(self, breed: str) -> list[Cat]:
@@ -41,7 +40,6 @@ class CatRepository(CatRepositoryProtocol):
             .where(breeds_table.c.title == breed)
         )
         result = await self._session.execute(stmt)
-
         return self._load_cats(result.all())
 
     async def get_by_id(self, id: int) -> Cat | None:
@@ -51,7 +49,6 @@ class CatRepository(CatRepositoryProtocol):
             .where(cats_table.c.id == id)
         )
         result = (await self._session.execute(stmt)).one_or_none()
-
         return self._load_cat(result) if result else None
 
     async def add(self, cat: Cat) -> None:

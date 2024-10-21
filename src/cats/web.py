@@ -27,10 +27,8 @@ def create_app() -> FastAPI:
     app.include_router(cats.router)
     app.include_router(breeds.router)
     app.include_router(index.router)
-
     container = init_async_container()
     setup_dishka(container, app)
     map_tables()
     logger.info("App created")
-
     return app

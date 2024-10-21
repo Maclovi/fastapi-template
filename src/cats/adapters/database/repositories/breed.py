@@ -25,7 +25,6 @@ class BreedRepository(BreedRepositoryProtocol):
     async def get_by_title(self, title: str) -> Breed | None:
         stmt = select(breeds_table).where(breeds_table.c.title == title)
         result = (await self._session.execute(stmt)).one_or_none()
-
         return self._load_breed(result) if result else None
 
     async def get_all(self) -> list[Breed]:
