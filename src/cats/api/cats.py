@@ -23,7 +23,6 @@ async def get_by_breed(
     breed: str, service: FromDishka[CatService]
 ) -> list[Cat]:
     logger.info(f"Getting cats with breed: {breed}")
-
     results: list[Cat] = await service.get_by_breed(breed)
     if not results:
         raise HTTPException(status_code=404, detail="cats not found")
@@ -33,7 +32,6 @@ async def get_by_breed(
 @router.get("/{id}", summary="Get cat by id")
 async def get_by_id(id: int, service: FromDishka[CatService]) -> Cat:
     logger.info(f"Getting cat with id: {id}")
-
     result = await service.get_by_id(id)
     if result is None:
         raise HTTPException(status_code=404, detail="cat not found")
@@ -45,7 +43,6 @@ async def add(
     cat: CatInput, service: FromDishka[CatService]
 ) -> dict[str, str]:
     logger.info(f"Adding cat: {cat}")
-
     try:
         await service.add(cat.to_model())
         return {"message": "cat added"}
@@ -60,7 +57,6 @@ async def update(
     cat: CatInput, service: FromDishka[CatService]
 ) -> dict[str, str]:
     logger.info(f"Updating cat: {cat}")
-
     await service.update(cat.to_model())
     return {"message": "cat updated"}
 
@@ -70,6 +66,5 @@ async def delete_by_id(
     id: int, service: FromDishka[CatService]
 ) -> dict[str, str]:
     logger.info(f"Deleting cat with id: {id}")
-
     await service.delete_by_id(id)
     return {"message": "cat deleted"}

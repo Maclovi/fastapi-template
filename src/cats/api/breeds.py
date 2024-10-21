@@ -13,6 +13,5 @@ router = APIRouter(prefix="/breeds", tags=["Breeds"], route_class=DishkaRoute)
 @router.get("/")
 async def get_all_breeds(service: FromDishka[BreedService]) -> list[Breed]:
     logger.info("Getting all breeds")
-
     results: list[Breed] = await service.get_all()
     return results
