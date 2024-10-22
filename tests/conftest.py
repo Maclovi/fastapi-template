@@ -1,5 +1,5 @@
 import os
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Iterator
 from typing import cast
 
 import pytest
@@ -7,17 +7,18 @@ from dishka import AsyncContainer
 from fastapi.testclient import TestClient
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 
-from cats.adapters.database.models import mapper_registry
+from cats.adapters.database.models import metadata
 from cats.web import create_app
 
 
 @pytest.fixture(scope="session")
-def client() -> TestClient:
+def client() -> Iterator[TestClient]:
     os.environ["POSTGRES_URI"] = (
         "postgresql+psycopg://postgres:postgres@localhost:5432/postgres"
     )
     app = create_app()
-    return TestClient(app)
+    with TestClient(app) as client:
+        yield client
 
 
 @pytest.fixture(scope="session")
@@ -36,10 +37,10 @@ async def session(container: AsyncContainer) -> AsyncIterator[AsyncSession]:
         yield await c_request.get(AsyncSession)
 
 
-@pytest.fixture(scope="module", autouse=True)
-async def create_all_tables(engine: AsyncEngine) -> AsyncIterator[None]:
+@pytest.fixture(scope="session", autouse=True)
+async def create_tables(engine: AsyncEngine) -> AsyncIterator[None]:
     async with engine.begin() as conn:
-        await conn.run_sync(mapper_registry.metadata.create_all)
+        await conn.run_sync(metadata.create_all)
     yield None
     async with engine.begin() as conn:
-        await conn.run_sync(mapper_registry.metadata.drop_all)
+        await conn.run_sync(metadata.drop_all)
