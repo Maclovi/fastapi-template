@@ -54,7 +54,9 @@ class DBProvider(Provider):
         engine: AsyncEngine,
     ) -> async_sessionmaker[AsyncSession]:
         return async_sessionmaker(
-            engine, autoflush=False, expire_on_commit=False
+            engine,
+            autoflush=False,
+            expire_on_commit=False,
         )
 
     @provide(scope=Scope.REQUEST)
