@@ -91,10 +91,6 @@ allow_untyped_decorators = true
 disallow_incomplete_defs = true
 disallow_any_unimported = false
 
-[tool.isort]
-profile = "black"
-line_length = 79
-
 [tool.ruff]
 line-length = 79
 fix = true

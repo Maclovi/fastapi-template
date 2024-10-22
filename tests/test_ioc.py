@@ -10,7 +10,6 @@ if TYPE_CHECKING:
 
 
 @pytest.mark.container
-@pytest.mark.asyncio
 async def test_container(container: "AsyncContainer") -> None:
     async with container() as c_request:
         assert await c_request.get(AsyncEngine) is not None
