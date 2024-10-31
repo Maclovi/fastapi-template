@@ -1,12 +1,15 @@
 from dataclasses import dataclass, field
+from typing import NewType
 
-from cats.domain.models.breed import Breed
+from cats.domain.models.breed import BreedId
+
+CatId = NewType("CatId", int)
 
 
 @dataclass
 class Cat:
-    id: int
+    id: CatId
     color: str
     age: int
     description: str
-    breed: Breed | None = field(default=None)
+    breed_id: BreedId | None = field(default=None)

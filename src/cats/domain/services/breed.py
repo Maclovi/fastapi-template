@@ -3,7 +3,7 @@ from cats.domain.protocols import BreedRepositoryProtocol, UoWProtocol
 
 
 class BreedService:
-    """Breed service. The service layer is responsible for the business logic."""  # noqa: E501
+    """Breed service. The service layer is responsible for the business logic."""
 
     def __init__(
         self, repository: BreedRepositoryProtocol, uow: UoWProtocol

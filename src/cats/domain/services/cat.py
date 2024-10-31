@@ -1,6 +1,8 @@
 import logging
+from dataclasses import dataclass
 
-from cats.domain.models import Cat
+from cats.domain.models.breed import Breed, BreedId
+from cats.domain.models.cat import Cat, CatId
 from cats.domain.protocols import (
     BreedRepositoryProtocol,
     CatRepositoryProtocol,
@@ -8,6 +10,15 @@ from cats.domain.protocols import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class CatInputData:
+    id: int
+    color: str
+    age: int
+    description: str
+    breed_title: str | None
 
 
 class CatService:
@@ -23,6 +34,26 @@ class CatService:
         self._breed_repository = breed_repository
         self._uow = uow
 
+    async def _get_breed_id(self, title: str | None) -> BreedId | None:
+        breed_id = None
+        if title:
+            breed = await self._breed_repository.get_by_title(title)
+            if breed is None:
+                breed = Breed(title=title)
+                await self._breed_repository.save(breed)
+            breed_id = breed.id
+        return breed_id
+
+    async def _handle_data(self, data: CatInputData) -> Cat:
+        breed_id = await self._get_breed_id(data.breed_title)
+        return Cat(
+            id=CatId(data.id),
+            color=data.color,
+            age=data.age,
+            description=data.description,
+            breed_id=breed_id,
+        )
+
     async def get_all(self) -> list[Cat]:
         results: list[Cat] = await self._cat_repository.get_all()
         return results
@@ -34,24 +65,14 @@ class CatService:
     async def get_by_id(self, id: int) -> Cat | None:
         return await self._cat_repository.get_by_id(id)
 
-    async def add(self, cat: Cat) -> None:
-        if cat.breed:
-            async with self._uow as nested_uow:
-                try:
-                    self._breed_repository.add(cat.breed)
-                    await nested_uow.commit()
-                except Exception as exc:
-                    await nested_uow.rollback()
-                    logger.error(exc)
-                    breed = await self._breed_repository.get_by_title(
-                        cat.breed.title
-                    )
-                    if breed:
-                        cat.breed.id = breed.id
-        await self._cat_repository.add(cat)
+    async def add(self, data: CatInputData) -> CatId | None:
+        cat = await self._handle_data(data)
+        await self._cat_repository.save(cat)
         await self._uow.commit()
+        return cat.id
 
-    async def update(self, cat: Cat) -> None:
+    async def update(self, data: CatInputData) -> None:
+        cat = await self._handle_data(data)
         await self._cat_repository.update(cat)
         await self._uow.commit()
 
