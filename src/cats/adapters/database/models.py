@@ -1,4 +1,5 @@
 from sqlalchemy import (
+    BigInteger,
     Column,
     DateTime,
     ForeignKey,
@@ -26,7 +27,7 @@ mapper_registry = registry(metadata=metadata)
 breeds_table = Table(
     "breeds",
     mapper_registry.metadata,
-    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("id", BigInteger, primary_key=True, autoincrement=True),
     Column("title", String(30), nullable=False, unique=True),
     Column(
         "created_at",
@@ -48,13 +49,13 @@ breeds_table = Table(
 cats_table = Table(
     "cats",
     mapper_registry.metadata,
-    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("id", BigInteger, primary_key=True, autoincrement=True),
     Column("color", String(30), nullable=False),
     Column("age", Integer, nullable=False),
     Column("description", String(200), nullable=False),
     Column(
         "breed_id",
-        Integer,
+        BigInteger,
         ForeignKey("breeds.id", ondelete="SET NULL"),
         nullable=True,
     ),
@@ -78,7 +79,15 @@ cats_table = Table(
 
 
 def map_tables() -> None:
-    mapper_registry.map_imperatively(Breed, breeds_table)
     mapper_registry.map_imperatively(
-        Cat, cats_table, properties={"breed": relationship("Breed")}
+        Breed,
+        breeds_table,
+        properties={"cats": relationship("Cat", back_populates="breed")},
+    )
+    mapper_registry.map_imperatively(
+        Cat,
+        cats_table,
+        properties={
+            "breed": relationship("Breed", back_populates="cats", lazy="joined")
+        },
     )

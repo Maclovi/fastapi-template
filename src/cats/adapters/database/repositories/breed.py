@@ -1,10 +1,9 @@
-from collections.abc import Sequence
-from typing import Any
-
-from sqlalchemy import Row, select
+from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from cats.adapters.database.models import breeds_table
+from cats.domain.exceptions.breed_exc import BreedAlreadyExistError
 from cats.domain.models import Breed
 from cats.domain.protocols import BreedRepositoryProtocol
 
@@ -13,21 +12,20 @@ class BreedRepository(BreedRepositoryProtocol):
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
-    def _load_breed(self, row: Row[Any]) -> Breed:
-        return Breed(id=row.id, title=row.title)
-
-    def _load_breeds(self, rows: Sequence[Row[Any]]) -> list[Breed]:
-        return [self._load_breed(row) for row in rows]
-
-    def add(self, breed: Breed) -> None:
+    async def save(self, breed: Breed) -> None:
         self._session.add(breed)
+        try:
+            await self._session.flush()
+        except IntegrityError as exc:
+            raise BreedAlreadyExistError from exc
 
     async def get_by_title(self, title: str) -> Breed | None:
-        stmt = select(breeds_table).where(breeds_table.c.title == title)
-        result = (await self._session.execute(stmt)).one_or_none()
-        return self._load_breed(result) if result else None
+        stmt = select(Breed).where(breeds_table.c.title == title)
+        result = await self._session.execute(stmt)
+        return result.scalar_one_or_none()
 
     async def get_all(self) -> list[Breed]:
-        stmt = select(breeds_table)
-        recieved_breeds = await self._session.execute(stmt)
-        return self._load_breeds(recieved_breeds.all())
+        stmt = select(Breed)
+        print(stmt)
+        results = await self._session.scalars(stmt)
+        return list(results.all())

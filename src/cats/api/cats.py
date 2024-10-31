@@ -3,9 +3,10 @@ from logging import getLogger
 from dishka.integrations.fastapi import DishkaRoute, FromDishka
 from fastapi import APIRouter, HTTPException, status
 
-from cats.adapters.schemes.catinput import CatInput
+from cats.domain.exceptions.cat_exc import CatAlreadyExistError
 from cats.domain.models import Cat
 from cats.domain.services import CatService
+from cats.domain.services.cat import CatInputData
 
 logger = getLogger(__name__)
 router = APIRouter(prefix="/cats", tags=["Cats"], route_class=DishkaRoute)
@@ -19,9 +20,7 @@ async def get_all(service: FromDishka[CatService]) -> list[Cat]:
 
 
 @router.get("/breed/{breed}", summary="Get cats by breed")
-async def get_by_breed(
-    breed: str, service: FromDishka[CatService]
-) -> list[Cat]:
+async def get_by_breed(breed: str, service: FromDishka[CatService]) -> list[Cat]:
     logger.info(f"Getting cats with breed: {breed}")
     results: list[Cat] = await service.get_by_breed(breed)
     if not results:
@@ -39,32 +38,26 @@ async def get_by_id(id: int, service: FromDishka[CatService]) -> Cat:
 
 
 @router.post("/add", status_code=status.HTTP_201_CREATED, summary="Add cat")
-async def add(
-    cat: CatInput, service: FromDishka[CatService]
-) -> dict[str, str]:
-    logger.info(f"Adding cat: {cat}")
+async def add(data: CatInputData, service: FromDishka[CatService]) -> dict[str, str]:
+    logger.info(f"Adding cat: {data}")
     try:
-        await service.add(cat.to_model())
+        await service.add(data)
         return {"message": "cat added"}
-    except Exception as e:
+    except CatAlreadyExistError as exc:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT, detail="cat already exists"
-        ) from e
+        ) from exc
 
 
 @router.put("/update", summary="Update cat")
-async def update(
-    cat: CatInput, service: FromDishka[CatService]
-) -> dict[str, str]:
+async def update(cat: CatInputData, service: FromDishka[CatService]) -> dict[str, str]:
     logger.info(f"Updating cat: {cat}")
-    await service.update(cat.to_model())
+    await service.update(cat)
     return {"message": "cat updated"}
 
 
 @router.delete("/delete/{id}", summary="Delete cat by id")
-async def delete_by_id(
-    id: int, service: FromDishka[CatService]
-) -> dict[str, str]:
+async def delete_by_id(id: int, service: FromDishka[CatService]) -> dict[str, str]:
     logger.info(f"Deleting cat with id: {id}")
     await service.delete_by_id(id)
     return {"message": "cat deleted"}

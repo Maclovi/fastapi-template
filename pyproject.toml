@@ -61,9 +61,7 @@ Issues = "https://github.com/Maclovi/cats/issues"
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
 xfail_strict=true
-markers = [
-    "container: test container"
-]
+markers = ["container"]
 testpaths = ["tests"]
 filterwarnings = []
 
@@ -92,16 +90,16 @@ disallow_incomplete_defs = true
 disallow_any_unimported = false
 
 [tool.ruff]
-line-length = 79
+line-length = 88
 fix = true
 
 [tool.ruff.lint]
 select = [
+    # "D",     # pydocstyle             https://docs.astral.sh/ruff/rules/#pydocstyle-d
     "I",     # isort                  https://docs.astral.sh/ruff/rules/#isort-i
     "E",     # pycodestyle errors     https://docs.astral.sh/ruff/rules/#error-e
     "W",     # pycodestyle warnings   https://docs.astral.sh/ruff/rules/#warning-w
     "F",     # pyflakes               https://docs.astral.sh/ruff/rules/#pyflakes-f
-    # "D",     # pydocstyle             https://docs.astral.sh/ruff/rules/#pydocstyle-d
     "B",     # flake8-bugbear         https://docs.astral.sh/ruff/rules/#flake8-bugbear-b
     "Q",     # flake8-quotes          https://docs.astral.sh/ruff/rules/#flake8-quotes-q
     "N",     # pep8-naming            https://docs.astral.sh/ruff/rules/#pep8-naming-n
