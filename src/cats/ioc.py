@@ -72,7 +72,9 @@ def repository_provider() -> Provider:
     provider.provide(
         BreedRepository, scope=Scope.REQUEST, provides=BreedRepositoryProtocol
     )
-    provider.provide(CatRepository, scope=Scope.REQUEST, provides=CatRepositoryProtocol)
+    provider.provide(
+        CatRepository, scope=Scope.REQUEST, provides=CatRepositoryProtocol
+    )
     return provider
 
 

@@ -26,6 +26,5 @@ class BreedRepository(BreedRepositoryProtocol):
 
     async def get_all(self) -> list[Breed]:
         stmt = select(Breed)
-        print(stmt)
         results = await self._session.scalars(stmt)
         return list(results.all())
