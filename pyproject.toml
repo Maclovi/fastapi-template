@@ -10,7 +10,7 @@ name = "cats"
 dynamic = ["version"]
 description = "Simple api cats"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: Apache Software License",
@@ -39,22 +39,19 @@ lint = [
     "cats[types]",
     "ruff",
 ]
-lint_optional = [
+lint_extra = [
     "bandit",
     "semgrep",
     "codespell",
 ]
-lint_full = [
-    "cats[lint,lint_optional]",
-]
-dev = ["cats[test,lint_full]"]
-devmin = ["cats[test,lint_optional]"]
+dev = ["cats[test,lint,lint_extra]"]
+devmin = ["cats[test,lint]"]
 
 [project.urls]
-Homepage = "https://github.com/Maclovi/cats"
-Documentation = "https://github.com/Maclovi/README.md"
-Repository = "https://github.com/Maclovi/cats"
-Issues = "https://github.com/Maclovi/cats/issues"
+Homepage = "https://github.com/Maclovi/fastapi-template"
+Documentation = "https://github.com/Maclovi/fastapi-template/README.md"
+Repository = "https://github.com/Maclovi/fastapi-template"
+Issues = "https://github.com/Maclovi/fastapi-template/issues"
 
 
 [tool.pytest.ini_options]
@@ -67,7 +64,7 @@ filterwarnings = []
 
 [tool.mypy]
 exclude = [".venv"]
-python_version = "3.12"
+python_version = "3.10"
 strict = true
 pretty = true
 
@@ -90,27 +87,27 @@ disallow_incomplete_defs = true
 disallow_any_unimported = false
 
 [tool.ruff]
-line-length = 88
+target-version = "py310"
+line-length = 79
 fix = true
 
 [tool.ruff.lint]
 select = [
-    # "D",     # pydocstyle             https://docs.astral.sh/ruff/rules/#pydocstyle-d
     "I",     # isort                  https://docs.astral.sh/ruff/rules/#isort-i
     "E",     # pycodestyle errors     https://docs.astral.sh/ruff/rules/#error-e
     "W",     # pycodestyle warnings   https://docs.astral.sh/ruff/rules/#warning-w
     "F",     # pyflakes               https://docs.astral.sh/ruff/rules/#pyflakes-f
-    "B",     # flake8-bugbear         https://docs.astral.sh/ruff/rules/#flake8-bugbear-b
-    "Q",     # flake8-quotes          https://docs.astral.sh/ruff/rules/#flake8-quotes-q
     "N",     # pep8-naming            https://docs.astral.sh/ruff/rules/#pep8-naming-n
     "UP",    # pyupgrade              https://docs.astral.sh/ruff/rules/#pyupgrade-up
+    "B",     # flake8-bugbear         https://docs.astral.sh/ruff/rules/#flake8-bugbear-b
+    "Q",     # flake8-quotes          https://docs.astral.sh/ruff/rules/#flake8-quotes-q
     "C4",    # flake8-comprehensions  https://docs.astral.sh/ruff/rules/#flake8-comprehensions-c4
     "PT",    # flake8-pytest-style    https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt
     "PTH",   # flake8-use-pathlib     https://docs.astral.sh/ruff/rules/#flake8-use-pathlib-pth
     "TCH",   # flake8-type-checking   https://docs.astral.sh/ruff/rules/#flake8-type-checking-tch
-    "C90",   # mccabe                 https://docs.astral.sh/ruff/rules/#mccabe-c90
     "T20",   # flake8-print           https://docs.astral.sh/ruff/rules/#flake8-print-t20
     "SIM",   # flake8-simplify        https://docs.astral.sh/ruff/rules/#flake8-simplify-sim
+    "C90",   # mccabe                 https://docs.astral.sh/ruff/rules/#mccabe-c90
     "RUF",   # Ruff-specific rules    https://docs.astral.sh/ruff/rules/#ruff-specific-rules-ruf
     "PERF",  # Perflint               https://docs.astral.sh/ruff/rules/#perflint-perf
     "ASYNC", # flake8-async           https://docs.astral.sh/ruff/rules/#flake8-async-async

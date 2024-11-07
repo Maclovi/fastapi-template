@@ -65,7 +65,7 @@ class CatService:
     async def get_by_id(self, id: int) -> Cat | None:
         return await self._cat_repository.get_by_id(id)
 
-    async def add(self, data: CatInputData) -> CatId | None:
+    async def add(self, data: CatInputData) -> CatId:
         cat = await self._handle_data(data)
         await self._cat_repository.save(cat)
         await self._uow.commit()
