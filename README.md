@@ -9,8 +9,8 @@
 Clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/Maclovi/cats
-cd cats
+git clone https://github.com/Maclovi/fastapi-template
+cd fastapi-template
 ```
 ## How to run
 
