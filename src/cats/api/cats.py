@@ -25,6 +25,11 @@ async def get_by_breed(
 ) -> list[Cat]:
     logger.info(f"Getting cats with breed: {breed}")
     results: list[Cat] = await service.get_by_breed(breed)
+    if not results:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Cats not found by breed {breed}",
+        )
     return results
 
 
@@ -33,7 +38,7 @@ async def get_by_id(id: int, service: FromDishka[CatService]) -> Cat:
     logger.info(f"Getting cat with id: {id}")
     result = await service.get_by_id(id)
     if result is None:
-        raise HTTPException(status_code=404, detail="cat not found")
+        raise HTTPException(status_code=404, detail="Cat not found")
     return result
 
 
@@ -47,7 +52,7 @@ async def add(
         return {"message": f"cat added, {cat_id=}"}
     except CatAlreadyExistError as exc:
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail="cat already exists"
+            status_code=status.HTTP_409_CONFLICT, detail="Cat already exists"
         ) from exc
 
 
@@ -66,4 +71,4 @@ async def delete_by_id(
 ) -> dict[str, str]:
     logger.info(f"Deleting cat with id: {id}")
     await service.delete_by_id(id)
-    return {"message": "cat deleted"}
+    return {"message": "Cat deleted"}

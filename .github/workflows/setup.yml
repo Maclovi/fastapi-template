@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  static_analysis:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Install Dependencies and library
+        run: |
+          set -ux
+          uv pip install --system .[dev]
+
+      - name: Run ruff
+        run: ruff check
+
+      - name: Run mypy
+        run: mypy src
+
+      - name: Run bandit
+        run: bandit -c pyproject.toml -r cats
+
+      - name: Run Semgrep
+        run: semgrep scan --config auto --error
+
+      - name: Run pytest
+        run: pytest -q
