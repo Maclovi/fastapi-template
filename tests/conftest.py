@@ -1,10 +1,10 @@
 import os
-from collections.abc import AsyncIterator, Iterator
-from typing import cast
+from collections.abc import AsyncIterator
 
 import pytest
 from dishka import AsyncContainer
-from fastapi.testclient import TestClient
+from fastapi import FastAPI
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 
 from cats.adapters.database.models import metadata
@@ -12,18 +12,24 @@ from cats.web import create_app
 
 
 @pytest.fixture(scope="session")
-def client() -> Iterator[TestClient]:
+def app() -> FastAPI:
     os.environ["POSTGRES_URI"] = (
         "postgresql+psycopg://postgres:postgres@localhost:5432/postgres"
     )
     app = create_app()
-    with TestClient(app) as client:
-        yield client
+    return app
 
 
 @pytest.fixture(scope="session")
-def container(client: TestClient) -> AsyncContainer:
-    return cast(AsyncContainer, client.app.state.dishka_container)  # type: ignore
+def container(app: FastAPI) -> AsyncContainer:
+    return app.state.dishka_container
+
+
+@pytest.fixture(scope="session")
+async def client(app: FastAPI) -> AsyncIterator[AsyncClient]:
+    transport = ASGITransport(app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        yield ac
 
 
 @pytest.fixture(scope="session")
