@@ -15,8 +15,7 @@ router = APIRouter(prefix="/cats", tags=["Cats"], route_class=DishkaRoute)
 @router.get("/", summary="Get all cats")
 async def get_all(service: FromDishka[CatService]) -> list[Cat]:
     logger.info("Getting all cats")
-    results: list[Cat] = await service.get_all()
-    return results
+    return await service.get_all()
 
 
 @router.get("/breed/{breed}", summary="Get cats by breed")
@@ -24,7 +23,7 @@ async def get_by_breed(
     breed: str, service: FromDishka[CatService]
 ) -> list[Cat]:
     logger.info(f"Getting cats with breed: {breed}")
-    results: list[Cat] = await service.get_by_breed(breed)
+    results = await service.get_by_breed(breed)
     if not results:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

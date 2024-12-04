@@ -8,11 +8,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  static_analysis:
+  cpython:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:latest
+        image: postgres:alpine
         env:
           POSTGRES_DB: postgres
           POSTGRES_USER: postgres
@@ -23,21 +23,27 @@ jobs:
           --health-timeout 5s
           --health-retries 5
         ports:
-          - 5432:5432
+          - 127.0.0.1:5432:5432
 
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-      - uses: astral-sh/setup-uv@v3
+
+      - uses: astral-sh/setup-uv@v4
         with:
           version: "latest"
 
+      - uses: actions/cache@v4
+        id: cache
+        with:
+          path: ${{ env.pythonLocation }}
+          key:  ${{ runner.os }}-python-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-uv
+
       - name: Install Dependencies and library
-        run: |
-          set -ux
-          uv pip install --system .[dev]
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: uv pip install --system .[dev]
 
       - name: Run ruff
         run: ruff check

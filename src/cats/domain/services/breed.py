@@ -14,4 +14,4 @@ class BreedService:
         self._uow = uow
 
     async def get_all(self) -> list[Breed]:
-        return await self._repository.get_all()  # type: ignore[no-any-return]
+        return await self._repository.get_all()

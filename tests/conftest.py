@@ -1,5 +1,6 @@
 import os
 from collections.abc import AsyncIterator
+from typing import cast
 
 import pytest
 from dishka import AsyncContainer
@@ -16,13 +17,14 @@ def app() -> FastAPI:
     os.environ["POSTGRES_URI"] = (
         "postgresql+psycopg://postgres:postgres@localhost:5432/postgres"
     )
+    os.environ["SQLALCHEMY_DEBUG"] = "true"
     app = create_app()
     return app
 
 
 @pytest.fixture(scope="session")
 def container(app: FastAPI) -> AsyncContainer:
-    return app.state.dishka_container
+    return cast(AsyncContainer, app.state.dishka_container)
 
 
 @pytest.fixture(scope="session")
@@ -34,7 +36,7 @@ async def client(app: FastAPI) -> AsyncIterator[AsyncClient]:
 
 @pytest.fixture(scope="session")
 async def engine(container: AsyncContainer) -> AsyncEngine:
-    return await container.get(AsyncEngine)
+    return cast(AsyncEngine, await container.get(AsyncEngine))
 
 
 @pytest.fixture
