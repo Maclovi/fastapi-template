@@ -6,23 +6,28 @@ from contextlib import asynccontextmanager
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pythonjsonlogger import jsonlogger
 
 from cats.adapters.database.models import map_tables
 from cats.api import breeds, cats, index
+from cats.api.middlewares.logger import LoggerMiddleware
 from cats.ioc import init_async_container
 
 logger = logging.getLogger(__name__)
 
 
+def setup_logger() -> None:
+    format = "%(levelname)s %(asctime)s %(name)s %(funcName)s %(message)s"
+    formatter = jsonlogger.JsonFormatter(format)
+    stream_handler = logging.StreamHandler(sys.stdout)
+    stream_handler.setFormatter(formatter)
+    logging.basicConfig(level=logging.INFO, handlers=[stream_handler])
+
+
 @asynccontextmanager
-async def _lifespan(app: FastAPI) -> AsyncIterator[None]:
+async def lifespan(app: FastAPI, /) -> AsyncIterator[None]:
     yield None
     await app.state.dishka_container.close()
-
-
-def setup_conf_logger() -> None:
-    format = "[%(asctime)s] [%(name)s] [%(levelname)s] > %(message)s"
-    logging.basicConfig(level=logging.INFO, format=format, stream=sys.stdout)
 
 
 def setup_container(app: FastAPI, /) -> None:
@@ -47,14 +52,15 @@ def setup_middlewares(app: FastAPI, /) -> None:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    app.add_middleware(LoggerMiddleware)
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(lifespan=_lifespan)
     map_tables()
-    setup_conf_logger()
-    setup_container(app)
+    setup_logger()
+    app = FastAPI(lifespan=lifespan, version="0.1.0")
     setup_routers(app)
+    setup_container(app)
     setup_middlewares(app)
-    logger.info("App created")
+    logger.info("App created", extra={"app_version": app.version})
     return app

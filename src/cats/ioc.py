@@ -38,9 +38,10 @@ class DBProvider(Provider):
 
     @provide(scope=Scope.APP)
     async def create_engine(self, db_uri: DBURI) -> AsyncIterator[AsyncEngine]:
+        echo = os.getenv("SQLALCHEMY_DEBUG", "false").lower() == "true"
         engine = create_async_engine(
             db_uri,
-            echo=True,
+            echo=echo,
             pool_size=15,
             max_overflow=15,
             connect_args={"connect_timeout": 5},
