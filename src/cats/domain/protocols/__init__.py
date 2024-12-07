@@ -1,3 +1,9 @@
-from .breed import BreedRepositoryProtocol as BreedRepositoryProtocol
-from .cat import CatRepositoryProtocol as CatRepositoryProtocol
-from .uow import UoWProtocol as UoWProtocol
+__all__ = [
+    "BreedRepositoryProtocol",
+    "CatRepositoryProtocol",
+    "UoWProtocol",
+]
+
+from .breed import BreedRepositoryProtocol
+from .cat import CatRepositoryProtocol
+from .uow import UoWProtocol

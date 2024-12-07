@@ -20,9 +20,9 @@ async def get_all(service: FromDishka[CatService]) -> list[Cat]:
 
 @router.get("/breed/{breed}", summary="Get cats by breed")
 async def get_by_breed(
-    breed: str, service: FromDishka[CatService]
+    breed: str,
+    service: FromDishka[CatService],
 ) -> list[Cat]:
-    logger.info(f"Getting cats with breed: {breed}")
     results = await service.get_by_breed(breed)
     if not results:
         raise HTTPException(
@@ -34,7 +34,6 @@ async def get_by_breed(
 
 @router.get("/{id}", summary="Get cat by id")
 async def get_by_id(id: int, service: FromDishka[CatService]) -> Cat:
-    logger.info(f"Getting cat with id: {id}")
     result = await service.get_by_id(id)
     if result is None:
         raise HTTPException(status_code=404, detail="Cat not found")
@@ -43,31 +42,33 @@ async def get_by_id(id: int, service: FromDishka[CatService]) -> Cat:
 
 @router.post("/add", status_code=status.HTTP_201_CREATED, summary="Add cat")
 async def add(
-    data: CatInputData, service: FromDishka[CatService]
+    data: CatInputData,
+    service: FromDishka[CatService],
 ) -> dict[str, str]:
-    logger.info(f"Adding cat: {data}")
     try:
         cat_id = await service.add(data)
-        return {"message": f"cat added, {cat_id=}"}
     except CatAlreadyExistError as exc:
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail="Cat already exists"
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Cat already exists",
         ) from exc
+    else:
+        return {"message": f"cat added, {cat_id=}"}
 
 
 @router.put("/update", summary="Update cat")
 async def update(
-    cat: CatInputData, service: FromDishka[CatService]
+    cat: CatInputData,
+    service: FromDishka[CatService],
 ) -> dict[str, str]:
-    logger.info(f"Updating cat: {cat}")
     await service.update(cat)
     return {"message": "cat updated"}
 
 
 @router.delete("/delete/{id}", summary="Delete cat by id")
 async def delete_by_id(
-    id: int, service: FromDishka[CatService]
+    id: int,
+    service: FromDishka[CatService],
 ) -> dict[str, str]:
-    logger.info(f"Deleting cat with id: {id}")
     await service.delete_by_id(id)
     return {"message": "Cat deleted"}

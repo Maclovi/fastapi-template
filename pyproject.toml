@@ -3,7 +3,10 @@ requires = ["setuptools>=66.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-package-dir = { "" = "src" }
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [project]
 name = "cats"
@@ -11,7 +14,7 @@ dynamic = ["version"]
 description = "Simple api cats"
 readme = "README.md"
 authors = [
-    { name = "Sergey Yavorsky", email = "yavorskyserge@gmail.com" },
+    { name = "Sergey Yavorsky", email = "maclovi.dev@gmail.com" },
 ]
 requires-python = ">=3.10"
 classifiers = [
@@ -98,31 +101,12 @@ line-length = 79
 fix = true
 
 [tool.ruff.lint]
-select = [
-    "I",     # isort                  https://docs.astral.sh/ruff/rules/#isort-i
-    "E",     # pycodestyle errors     https://docs.astral.sh/ruff/rules/#error-e
-    "W",     # pycodestyle warnings   https://docs.astral.sh/ruff/rules/#warning-w
-    "F",     # pyflakes               https://docs.astral.sh/ruff/rules/#pyflakes-f
-    "S",     # flake8-bandit          https://docs.astral.sh/ruff/rules/#flake8-bandit-s
-    "B",     # flake8-bugbear         https://docs.astral.sh/ruff/rules/#flake8-bugbear-b
-    "Q",     # flake8-quotes          https://docs.astral.sh/ruff/rules/#flake8-quotes-q
-    "N",     # pep8-naming            https://docs.astral.sh/ruff/rules/#pep8-naming-n
-    "UP",    # pyupgrade              https://docs.astral.sh/ruff/rules/#pyupgrade-up
-    "C4",    # flake8-comprehensions  https://docs.astral.sh/ruff/rules/#flake8-comprehensions-c4
-    "PT",    # flake8-pytest-style    https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt
-    "PTH",   # flake8-use-pathlib     https://docs.astral.sh/ruff/rules/#flake8-use-pathlib-pth
-    "TCH",   # flake8-type-checking   https://docs.astral.sh/ruff/rules/#flake8-type-checking-tch
-    "C90",   # mccabe                 https://docs.astral.sh/ruff/rules/#mccabe-c90
-    "T20",   # flake8-print           https://docs.astral.sh/ruff/rules/#flake8-print-t20
-    "SIM",   # flake8-simplify        https://docs.astral.sh/ruff/rules/#flake8-simplify-sim
-    "RUF",   # Ruff-specific rules    https://docs.astral.sh/ruff/rules/#ruff-specific-rules-ruf
-    "PERF",  # Perflint               https://docs.astral.sh/ruff/rules/#perflint-perf
-    "ASYNC", # flake8-async           https://docs.astral.sh/ruff/rules/#flake8-async-async
-]
+select = ["ALL"]
 ignore = [
-    "B008",  # do not perform function calls in argument defaults
-    "C901",  # too complex
-    "W191",  # indentation contains tabs
+   "D",
+   "A002", # buitin: id
+   "EM101",
+   "TRY003",
 ]
 
 [tool.ruff.format]
@@ -132,11 +116,8 @@ docstring-code-format = true
 convention = "google"
 
 [tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["F401"]
-"tests/**" = [
-    "S101", # use assert
-]
+"src/cats/adapters/database/alembic/**" = ["ERA001", "INP001"]
+"tests/**" = ["S101"]
 
-[tool.ruff.lint.pyupgrade]
-# Preserve types, even if a file imports `from __future__ import annotations`.
-keep-runtime-typing = true
+[lint.isort]
+no-lines-before = ["local-folder"]

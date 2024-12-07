@@ -14,5 +14,5 @@ async def test_container(container: "AsyncContainer") -> None:
     async with container() as c_request:
         assert await c_request.get(AsyncEngine) is not None
         assert await c_request.get(UoWProtocol) is await c_request.get(
-            AsyncSession
+            AsyncSession,
         ), "AsyncSession and UoWProtocol should be same instances"

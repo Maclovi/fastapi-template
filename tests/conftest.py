@@ -18,8 +18,7 @@ def app() -> FastAPI:
         "postgresql+psycopg://postgres:postgres@localhost:5432/postgres"
     )
     os.environ["SQLALCHEMY_DEBUG"] = "true"
-    app = create_app()
-    return app
+    return create_app()
 
 
 @pytest.fixture(scope="session")

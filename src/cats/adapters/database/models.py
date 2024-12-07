@@ -89,7 +89,7 @@ def map_tables() -> None:
         cats_table,
         properties={
             "breed": relationship(
-                "Breed", back_populates="cats", lazy="joined"
-            )
+                "Breed", back_populates="cats", lazy="joined",
+            ),
         },
     )

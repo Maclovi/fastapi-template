@@ -1,2 +1,6 @@
-from .breed import BreedRepository as BreedRepository
-from .cat import CatRepository as CatRepository
+__all__ = [
+    "BreedRepository",
+    "CatRepository",
+]
+from .breed import BreedRepository
+from .cat import CatRepository
