@@ -62,7 +62,8 @@ class DBProvider(Provider):
 
     @provide(scope=Scope.REQUEST)
     async def new_async_session(
-        self, session_factory: async_sessionmaker[AsyncSession]
+        self,
+        session_factory: async_sessionmaker[AsyncSession],
     ) -> AsyncIterator[AnyOf[AsyncSession, UoWProtocol]]:
         async with session_factory() as session:
             yield session
@@ -71,10 +72,14 @@ class DBProvider(Provider):
 def repository_provider() -> Provider:
     provider = Provider()
     provider.provide(
-        BreedRepository, scope=Scope.REQUEST, provides=BreedRepositoryProtocol
+        BreedRepository,
+        scope=Scope.REQUEST,
+        provides=BreedRepositoryProtocol,
     )
     provider.provide(
-        CatRepository, scope=Scope.REQUEST, provides=CatRepositoryProtocol
+        CatRepository,
+        scope=Scope.REQUEST,
+        provides=CatRepositoryProtocol,
     )
     return provider
 

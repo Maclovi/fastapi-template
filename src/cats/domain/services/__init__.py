@@ -1,2 +1,6 @@
-from .breed import BreedService as BreedService
-from .cat import CatService as CatService
+__all__ = [
+    "BreedService",
+    "CatService",
+]
+from .breed import BreedService
+from .cat import CatService

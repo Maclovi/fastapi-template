@@ -8,7 +8,7 @@ class BreedService:
     """
 
     def __init__(
-        self, repository: BreedRepositoryProtocol, uow: UoWProtocol
+        self, repository: BreedRepositoryProtocol, uow: UoWProtocol,
     ) -> None:
         self._repository = repository
         self._uow = uow

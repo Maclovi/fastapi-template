@@ -1,5 +1,8 @@
 from abc import abstractmethod
-from typing import Any, Protocol
+from types import TracebackType
+from typing import Protocol
+
+from typing_extensions import Self
 
 
 class UoWProtocol(Protocol):
@@ -16,12 +19,12 @@ class UoWProtocol(Protocol):
     async def rollback(self) -> None: ...
 
     @abstractmethod
-    async def __aenter__(self) -> Any: ...
+    async def __aenter__(self) -> Self: ...
 
     @abstractmethod
     async def __aexit__(
         self,
-        type_: type[BaseException],
-        value: BaseException,
-        traceback: None,
-    ) -> Any: ...
+        type_: type[BaseException] | None,
+        value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None: ...
