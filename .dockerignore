@@ -2,7 +2,7 @@
 venv/
 tests/
 build/
-**cats.egg-info/
+**.egg-info/
 
 # cache
 .mypy_cache
