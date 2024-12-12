@@ -103,10 +103,11 @@ fix = true
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-   "D",
-   "A002", # buitin: id
+   "D",      # docs
+   "A002",   # buitin: id
    "EM101",
    "TRY003",
+   "COM812", # Trailing comma missing
 ]
 
 [tool.ruff.format]

@@ -24,12 +24,6 @@ def setup_logger() -> None:
     logging.basicConfig(level=logging.INFO, handlers=[stream_handler])
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI, /) -> AsyncIterator[None]:
-    yield None
-    await app.state.dishka_container.close()
-
-
 def setup_container(app: FastAPI, /) -> None:
     container = init_async_container()
     setup_dishka(container, app)
@@ -45,14 +39,20 @@ def setup_middlewares(app: FastAPI, /) -> None:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[
-            "http://localhost:5173",
-            "http://127.0.0.1:5173",
+            "http://localhost:8080",
+            "http://127.0.0.1:8080",
         ],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
     app.add_middleware(LoggerMiddleware)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI, /) -> AsyncIterator[None]:
+    yield None
+    await app.state.dishka_container.close()
 
 
 def create_app() -> FastAPI:

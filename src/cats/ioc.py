@@ -1,85 +1,56 @@
-import os
-from collections.abc import AsyncIterator
-from typing import NewType
-
 from dishka import (
     AnyOf,
     AsyncContainer,
     Provider,
     Scope,
     make_async_container,
-    provide,
 )
-from sqlalchemy.ext.asyncio import (
-    AsyncEngine,
-    AsyncSession,
-    async_sessionmaker,
-    create_async_engine,
-)
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from cats.adapters.database.repositories import BreedRepository, CatRepository
+from cats.application.common.commiter import Commiter
+from cats.config import APIConfig, PostgresConfig, load_config
 from cats.domain.protocols import (
     BreedRepositoryProtocol,
     CatRepositoryProtocol,
-    UoWProtocol,
 )
 from cats.domain.services import BreedService, CatService
+from cats.infrastructure.persistence.db_provider import (
+    get_engine,
+    get_session,
+    get_sessionmaker,
+)
 
-DBURI = NewType("DBURI", str)
+
+def config_provider() -> Provider:
+    config = load_config()
+    proviver = Provider()
+    proviver.provide(
+        lambda: config.db, scope=Scope.APP, provides=PostgresConfig
+    )
+    proviver.provide(lambda: config.api, scope=Scope.APP, provides=APIConfig)
+    return proviver
 
 
-class DBProvider(Provider):
-    @provide(scope=Scope.APP)
-    def db_uri(self) -> DBURI:
-        db_uri = os.getenv("POSTGRES_URI")
-        if db_uri is None:
-            raise ValueError("POSTGRES_URI is not set")
-        return DBURI(db_uri)
-
-    @provide(scope=Scope.APP)
-    async def create_engine(self, db_uri: DBURI) -> AsyncIterator[AsyncEngine]:
-        echo = os.getenv("SQLALCHEMY_DEBUG", "false").lower() == "true"
-        engine = create_async_engine(
-            db_uri,
-            echo=echo,
-            pool_size=15,
-            max_overflow=15,
-            connect_args={"connect_timeout": 5},
-        )
-        yield engine
-        await engine.dispose()
-
-    @provide(scope=Scope.APP)
-    def create_async_sessionmaker(
-        self,
-        engine: AsyncEngine,
-    ) -> async_sessionmaker[AsyncSession]:
-        return async_sessionmaker(
-            engine,
-            autoflush=False,
-            expire_on_commit=False,
-        )
-
-    @provide(scope=Scope.REQUEST)
-    async def new_async_session(
-        self,
-        session_factory: async_sessionmaker[AsyncSession],
-    ) -> AsyncIterator[AnyOf[AsyncSession, UoWProtocol]]:
-        async with session_factory() as session:
-            yield session
+def db_provider() -> Provider:
+    provider = Provider()
+    provider.provide(get_engine, scope=Scope.APP)
+    provider.provide(get_sessionmaker, scope=Scope.APP)
+    provider.provide(
+        get_session,
+        scope=Scope.REQUEST,
+        provides=AnyOf[Commiter, AsyncSession],
+    )
+    return provider
 
 
 def repository_provider() -> Provider:
     provider = Provider()
     provider.provide(
-        BreedRepository,
-        scope=Scope.REQUEST,
-        provides=BreedRepositoryProtocol,
+        BreedRepository, scope=Scope.REQUEST, provides=BreedRepositoryProtocol
     )
     provider.provide(
-        CatRepository,
-        scope=Scope.REQUEST,
-        provides=CatRepositoryProtocol,
+        CatRepository, scope=Scope.REQUEST, provides=CatRepositoryProtocol
     )
     return provider
 
@@ -91,10 +62,14 @@ def service_provider() -> Provider:
     return provider
 
 
-def init_async_container() -> AsyncContainer:
-    providers = [
-        DBProvider(),
+def setup_providers() -> tuple[Provider, ...]:
+    return (
+        db_provider(),
         repository_provider(),
         service_provider(),
-    ]
+    )
+
+
+def init_async_container() -> AsyncContainer:
+    providers = setup_providers()
     return make_async_container(*providers)
