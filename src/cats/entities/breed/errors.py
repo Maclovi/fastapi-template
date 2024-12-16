@@ -9,4 +9,4 @@ class TitlelengthError(DomainError):
 
     @property
     def message(self) -> str:
-        return f"Length of titile should be a less than {self.length!r}"
+        return f"Length of title should be a less than {self.length!r}"
