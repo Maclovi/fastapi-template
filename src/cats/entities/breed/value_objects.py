@@ -4,7 +4,7 @@ from cats.entities.breed.errors import TitlelengthError
 
 
 @dataclass(slots=True, frozen=True, eq=True, unsafe_hash=True)
-class Title:
+class BreedTitle:
     value: str
 
     MAX_LENGTH: int = field(init=False, default=50)

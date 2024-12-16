@@ -1,7 +1,5 @@
 #!/bin/bash
 
-export POSTGRES_URI=postgresql+psycopg://postgres:postgres@localhost:5432/defaultdb   
-export SQLALCHEMY_DEBUG=false
-
+export $(grep -v '^#' .env | xargs)
 alembic upgrade head
-uvicorn --factory cats.web:create_app --host 0.0.0.0 --port 8000
+uvicorn --factory cats.web:create_app --host $UVICORN_HOST --port $UVICORN_PORT

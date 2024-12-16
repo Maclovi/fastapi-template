@@ -39,23 +39,26 @@ jobs:
         id: cache
         with:
           path: ${{ env.pythonLocation }}
-          key:  ${{ runner.os }}-python-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-uv
+          key: ${{ runner.os }}-python-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-uv
 
       - name: Install Dependencies and library
         if: steps.cache.outputs.cache-hit != 'true'
         run: uv pip install --system .[dev]
 
-      - name: Run ruff
+      - name: Run Ruff
         run: ruff check
 
-      - name: Run mypy
+      - name: Run Mypy
         run: mypy src
 
-      - name: Run bandit
+      - name: Run Bandit
         run: bandit -c pyproject.toml -r cats
 
       - name: Run Semgrep
         run: semgrep scan --config auto --error
 
-      - name: Run pytest
+      - name: Run Pytest
         run: pytest -q
+
+      - name: Run Codespell
+        run: codespell

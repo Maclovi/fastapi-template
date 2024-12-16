@@ -8,7 +8,7 @@ from cats.entities.cat.errors import (
 
 
 @dataclass(slots=True, frozen=True, eq=True, unsafe_hash=True)
-class Age:
+class CatAge:
     value: int
 
     MAX_AGE: int = field(init=False, default=99)
@@ -19,7 +19,7 @@ class Age:
 
 
 @dataclass(slots=True, frozen=True, eq=True, unsafe_hash=True)
-class Color:
+class CatColor:
     value: str
 
     MAX_LENGTH: int = field(init=False, default=50)
@@ -30,7 +30,7 @@ class Color:
 
 
 @dataclass(slots=True, frozen=True, eq=True, unsafe_hash=True)
-class Description:
+class CatDescription:
     value: str
 
     MAX_LENGTH: int = field(init=False, default=1000)
