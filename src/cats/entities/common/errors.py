@@ -16,3 +16,10 @@ class EntityError(DomainError):
     @property
     def message(self) -> str:
         return "Entities are not equivalent"
+
+
+@dataclass(eq=False)
+class FieldError(DomainError):
+    @property
+    def message(self) -> str:
+        return "Field Error"

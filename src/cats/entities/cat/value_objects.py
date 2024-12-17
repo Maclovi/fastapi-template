@@ -22,10 +22,11 @@ class CatAge:
 class CatColor:
     value: str
 
+    MIN_LENGTH: int = field(init=False, default=3)
     MAX_LENGTH: int = field(init=False, default=50)
 
     def __post_init__(self) -> None:
-        if len(self.value) > self.MAX_LENGTH:
+        if not (self.MIN_LENGTH <= len(self.value) <= self.MAX_LENGTH):
             raise ColorLengthError(self.MAX_LENGTH)
 
 

@@ -2,9 +2,8 @@ from abc import abstractmethod
 from dataclasses import dataclass, field
 from typing import Protocol
 
-from cats.application.common.dto import Pagination
-from cats.entities.breed.models import BreedId
-from cats.entities.cat.models import Cat, CatId
+from cats.application.common.persistence.filters import Pagination
+from cats.entities.cat.models import Cat, CatID
 
 
 @dataclass(frozen=True)
@@ -15,17 +14,12 @@ class CatFilters:
 
 class CatReader(Protocol):
     @abstractmethod
+    async def with_id(self, cat_id: CatID) -> Cat | None: ...
+
+    @abstractmethod
     async def all(
         self, filters: CatFilters, pagination: Pagination
     ) -> list[Cat]: ...
-
-    @abstractmethod
-    async def with_id(self, cat_id: CatId) -> Cat | None: ...
-
-    @abstractmethod
-    async def with_breed_id(
-        self, breed: BreedId, filters: CatFilters
-    ) -> None: ...
 
 
 class CatSaver(Protocol):
@@ -36,4 +30,4 @@ class CatSaver(Protocol):
     async def update(self, cat: Cat) -> None: ...
 
     @abstractmethod
-    async def delete_with_id(self, id: CatId) -> None: ...
+    async def delete_with_id(self, id: CatID) -> None: ...

@@ -104,11 +104,12 @@ fix = true
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-   "D",      # https://docs.astral.sh/ruff/rules/#pydocstyle-d
-   "A002",   # https://docs.astral.sh/ruff/rules/raw-string-in-exception/
-   "EM101",  # https://docs.astral.sh/ruff/rules/raw-string-in-exception/
-   "TRY003", # https://docs.astral.sh/ruff/rules/raise-vanilla-args/
-   "COM812", # https://docs.astral.sh/ruff/rules/missing-trailing-comma/
+    "D",      # https://docs.astral.sh/ruff/rules/#pydocstyle-d
+    "A002",   # https://docs.astral.sh/ruff/rules/raw-string-in-exception/
+    "EM101",  # https://docs.astral.sh/ruff/rules/raw-string-in-exception/
+    "TRY003", # https://docs.astral.sh/ruff/rules/raise-vanilla-args/
+    "COM812", # https://docs.astral.sh/ruff/rules/missing-trailing-comma/
+    "S101",   # https://docs.astral.sh/ruff/rules/assert/#assert-s101
 ]
 
 [tool.ruff.format]
@@ -119,7 +120,6 @@ convention = "google"
 
 [tool.ruff.lint.per-file-ignores]
 "src/cats/adapters/database/alembic/**" = ["ERA001", "INP001"]
-"tests/**" = ["S101"]
 
 [lint.isort]
 no-lines-before = ["local-folder"]
