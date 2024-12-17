@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 
-from cats.entities.common.errors import DomainError
+from cats.entities.common.errors import FieldError
 
 
 @dataclass(eq=False)
-class AgeMaxError(DomainError):
+class AgeMaxError(FieldError):
     age: int
 
     @property
@@ -13,7 +13,7 @@ class AgeMaxError(DomainError):
 
 
 @dataclass(eq=False)
-class ColorLengthError(DomainError):
+class ColorLengthError(FieldError):
     length: int
 
     @property
@@ -22,7 +22,7 @@ class ColorLengthError(DomainError):
 
 
 @dataclass(eq=False)
-class DescriptionLengthError(DomainError):
+class DescriptionLengthError(FieldError):
     length: int
 
     @property

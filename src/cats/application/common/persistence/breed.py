@@ -2,8 +2,9 @@ from abc import abstractmethod
 from dataclasses import dataclass, field
 from typing import Protocol
 
-from cats.application.common.dto import Pagination
-from cats.entities.breed.models import Breed, BreedId
+from cats.application.common.persistence.filters import Pagination
+from cats.entities.breed.models import Breed, BreedID
+from cats.entities.breed.value_objects import BreedTitle
 
 
 @dataclass(frozen=True)
@@ -13,7 +14,10 @@ class BreedFilters:
 
 class BreedReader(Protocol):
     @abstractmethod
-    async def with_id(self, user_id: BreedId) -> Breed | None: ...
+    async def with_id(self, user_id: BreedID) -> Breed | None: ...
+
+    @abstractmethod
+    async def with_title(self, user_id: BreedTitle) -> Breed | None: ...
 
     @abstractmethod
     async def all(
@@ -22,3 +26,8 @@ class BreedReader(Protocol):
 
     @abstractmethod
     async def total(self, filters: BreedFilters) -> int: ...
+
+
+class BreedSaver(Protocol):
+    @abstractmethod
+    async def save(self, user_id: Breed) -> None: ...

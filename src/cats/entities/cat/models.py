@@ -1,17 +1,17 @@
 from dataclasses import dataclass
 from typing import NewType
 
-from cats.domain.models.breed import BreedId
-from cats.entities.cat.value_objects import CatAge, CatColor
+from cats.entities.breed.models import BreedID
+from cats.entities.cat.value_objects import CatAge, CatColor, CatDescription
 from cats.entities.common.base_entity import BaseEntity
 
-CatId = NewType("CatId", int)
+CatID = NewType("CatID", int)
 
 
 @dataclass(kw_only=True)
-class Cat(BaseEntity[CatId]):
-    id: CatId | None
-    breed_id: BreedId | None
+class Cat(BaseEntity[CatID]):
+    id: CatID | None
+    breed_id: BreedID | None
     age: CatAge
     color: CatColor
-    description: str
+    description: CatDescription

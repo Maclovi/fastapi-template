@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 
-from cats.entities.common.errors import DomainError
+from cats.entities.common.errors import FieldError
 
 
 @dataclass(eq=False)
-class TitlelengthError(DomainError):
+class TitlelengthError(FieldError):
     length: int
 
     @property

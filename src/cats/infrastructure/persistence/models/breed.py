@@ -1,7 +1,7 @@
 import sqlalchemy as sa
 from sqlalchemy.orm import composite, relationship
 
-from cats.domain.models import Breed
+from cats.entities.breed.models import Breed
 from cats.entities.breed.value_objects import BreedTitle
 from cats.infrastructure.persistence.models.base import mapper_registry
 
