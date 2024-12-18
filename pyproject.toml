@@ -109,7 +109,6 @@ ignore = [
     "EM101",  # https://docs.astral.sh/ruff/rules/raw-string-in-exception/
     "TRY003", # https://docs.astral.sh/ruff/rules/raise-vanilla-args/
     "COM812", # https://docs.astral.sh/ruff/rules/missing-trailing-comma/
-    "S101",   # https://docs.astral.sh/ruff/rules/assert/#assert-s101
 ]
 
 [tool.ruff.format]
@@ -119,7 +118,9 @@ docstring-code-format = true
 convention = "google"
 
 [tool.ruff.lint.per-file-ignores]
-"src/cats/adapters/database/alembic/**" = ["ERA001", "INP001"]
+"src/cats/infrastructure/persistence/alembic/**" = ["ERA001", "INP001"]
+"src/cats/application/**" = ["S101"]
+"tests/**" = ["S101"]
 
 [lint.isort]
 no-lines-before = ["local-folder"]

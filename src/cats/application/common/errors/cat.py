@@ -10,10 +10,3 @@ class CatNotFoundError(ApplicationError):
     @property
     def message(self) -> str:
         return f"Cat with id={self.id} not found"
-
-
-@dataclass(eq=False)
-class CatIDNotFoundError(ApplicationError):
-    @property
-    def message(self) -> str:
-        return "Cat id is None, should be an integer"

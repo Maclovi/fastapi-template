@@ -8,7 +8,7 @@ from dishka import (
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from cats.adapters.database.repositories import BreedRepository, CatRepository
-from cats.application.common.committer import Committer
+from cats.application.common.committer import Transaction
 from cats.config import APIConfig, PostgresConfig, load_config
 from cats.domain.protocols import (
     BreedRepositoryProtocol,
@@ -39,7 +39,7 @@ def db_provider() -> Provider:
     provider.provide(
         get_session,
         scope=Scope.REQUEST,
-        provides=AnyOf[Committer, AsyncSession],
+        provides=AnyOf[Transaction, AsyncSession],
     )
     return provider
 
