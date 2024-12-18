@@ -2,14 +2,14 @@ import sqlalchemy as sa
 from sqlalchemy.orm import composite, relationship
 
 from cats.entities.breed.models import Breed
-from cats.entities.breed.value_objects import BreedTitle
+from cats.entities.breed.value_objects import BreedName
 from cats.infrastructure.persistence.models.base import mapper_registry
 
 breeds_table = sa.Table(
     "breeds",
     mapper_registry.metadata,
     sa.Column("id", sa.BigInteger, primary_key=True, autoincrement=True),
-    sa.Column("title", sa.String(50), nullable=False, unique=True),
+    sa.Column("name", sa.String(50), nullable=False, unique=True),
     sa.Column(
         "created_at",
         sa.DateTime,
@@ -35,6 +35,6 @@ def map_breed_table() -> None:
         breeds_table,
         properties={
             "cats": relationship("Cat", back_populates="breed"),
-            "title": composite(BreedTitle, breeds_table.c.title),
+            "name": composite(BreedName, breeds_table.c.name),
         },
     )
