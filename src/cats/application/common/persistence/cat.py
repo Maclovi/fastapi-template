@@ -20,7 +20,7 @@ class CatGateway(Protocol):
     @abstractmethod
     async def with_breed_name(
         self, breed_name: BreedName, pagination: Pagination
-    ) -> list[Cat] | None: ...
+    ) -> list[Cat]: ...
 
     @abstractmethod
     async def all(

@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class BoundCode(IntEnum):
+    INFORMATION = 199
     SUCCESSFUL = 299
     REDIRECT = 399
     CLIENT_ERROR = 499
@@ -39,7 +40,9 @@ class LoggerMiddleware(BaseHTTPMiddleware):
             "response_size": int(response.headers.get("content-length", 0)),
             "response_duration": end_time,
         }
-        if status_code <= BoundCode.SUCCESSFUL:
+        if status_code <= BoundCode.INFORMATION:
+            logger.info("Information response", extra=extra)
+        elif status_code <= BoundCode.SUCCESSFUL:
             logger.info("Success response", extra=extra)
         elif status_code <= BoundCode.REDIRECT:
             logger.info("Redirect response", extra=extra)

@@ -7,7 +7,6 @@ from cats.entities.common.base_entity import BaseEntity
 BreedID = NewType("BreedID", int)
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Breed(BaseEntity[BreedID]):
-    id: BreedID | None
     name: BreedName

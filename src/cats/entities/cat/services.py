@@ -16,7 +16,7 @@ class CatService:
         description: CatDescription,
     ) -> Cat:
         new_cat = Cat(
-            id=None,
+            oid=None,
             breed_id=breed_id,
             age=age,
             color=color,
