@@ -8,7 +8,7 @@ class BreedService:
         self._tracker = tracker
 
     def add_breed(self, name: BreedName) -> Breed:
-        new_breed = Breed(id=None, name=name)
+        new_breed = Breed(oid=None, name=name)
         self._tracker.add_one(new_breed)
         return new_breed
 

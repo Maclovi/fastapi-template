@@ -8,9 +8,8 @@ from cats.entities.common.base_entity import BaseEntity
 CatID = NewType("CatID", int)
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Cat(BaseEntity[CatID]):
-    id: CatID | None
     breed_id: BreedID | None
     age: CatAge
     color: CatColor

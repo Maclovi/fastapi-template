@@ -8,13 +8,13 @@ from cats.entities.common.tracker import Tracker
 
 class SATracker(Tracker):
     def __init__(self, session: AsyncSession) -> None:
-        self.session = session
+        self._session = session
 
     def add_one(self, entity: BaseEntity[OIDType]) -> None:
-        self.session.add(entity)
+        self._session.add(entity)
 
     def add_many(self, entities: Iterable[BaseEntity[OIDType]]) -> None:
-        self.session.add_all(entities)
+        self._session.add_all(entities)
 
     async def delete(self, entity: BaseEntity[OIDType]) -> None:
-        await self.session.delete(entity)
+        await self._session.delete(entity)

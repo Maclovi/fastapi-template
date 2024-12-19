@@ -45,15 +45,15 @@ class AddCatCommandHandler(Interactor[AddCatCommand, CatID]):
             description=CatDescription(data.description),
         )
         await self._transaction.commit()
-        assert cat.id is not None, "cat id should be an integer, not None"
-        return cat.id
+        assert cat.oid is not None, "cat id should be an integer, not None"
+        return cat.oid
 
     async def _get_breed_id(self, breed_name: BreedName) -> BreedID:
         breed = await self._breed_gateway.with_name(breed_name)
         if breed is None:
             breed = await self._create_breed(breed_name)
-        assert breed.id is not None, "breed id should be an integer, not None"
-        return breed.id
+        assert breed.oid is not None, "breed id should be an integer, not None"
+        return breed.oid
 
     async def _create_breed(self, breed_name: BreedName) -> Breed:
         breed = self._breed_service.add_breed(breed_name)

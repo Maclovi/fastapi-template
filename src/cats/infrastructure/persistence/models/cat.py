@@ -8,14 +8,14 @@ from cats.infrastructure.persistence.models.base import mapper_registry
 cats_table = sa.Table(
     "cats",
     mapper_registry.metadata,
-    sa.Column("id", sa.BigInteger, primary_key=True, autoincrement=True),
+    sa.Column("cat_id", sa.BigInteger, primary_key=True, autoincrement=True),
     sa.Column("age", sa.Integer, nullable=False),
     sa.Column("color", sa.String(50), nullable=False),
     sa.Column("description", sa.String(1000), nullable=False),
     sa.Column(
         "breed_id",
         sa.BigInteger,
-        sa.ForeignKey("breeds.id", ondelete="SET NULL"),
+        sa.ForeignKey("breeds.breed_id", ondelete="SET NULL"),
         nullable=True,
     ),
     sa.Column(
@@ -42,6 +42,7 @@ def map_cat_table() -> None:
         Cat,
         cats_table,
         properties={
+            "oid": cats_table.c.cat_id,
             "breed": relationship(
                 "Breed", back_populates="cats", lazy="joined"
             ),
