@@ -18,7 +18,7 @@ class BreedMapper(BreedGateway):
         return result.scalar_one_or_none()
 
     async def with_name(self, name: BreedName) -> Breed | None:
-        stmt = select(Breed).where(breeds_table.c.name == name)
+        stmt = select(Breed).where(breeds_table.c.breed_name == name.value)
         result = await self._session.execute(stmt)
         return result.scalar_one_or_none()
 

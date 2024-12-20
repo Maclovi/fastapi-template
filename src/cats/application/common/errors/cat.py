@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 
-from cats.application.common.errors.base import ApplicationError
+from cats.application.common.errors.base import EntityNotFoundError
 
 
 @dataclass(eq=False)
-class CatNotFoundError(ApplicationError):
+class CatNotFoundError(EntityNotFoundError):
     id: int
 
     @property

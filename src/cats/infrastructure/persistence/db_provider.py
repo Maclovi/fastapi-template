@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from cats.config import PostgresConfig
+from cats.infrastructure.bootstrap.configs import PostgresConfig
 
 
 async def get_engine(config: PostgresConfig) -> AsyncIterator[AsyncEngine]:

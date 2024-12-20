@@ -1,7 +1,8 @@
 from logging import getLogger
+from typing import Annotated
 
 from dishka.integrations.fastapi import DishkaRoute, FromDishka
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 
 from cats.application.commands.cat.add_cat import (
     AddCatCommand,
@@ -15,6 +16,8 @@ from cats.application.commands.cat.update_cat import (
     UpdateCatDescriptionCommand,
     UpdateCatDescriptionCommandHandler,
 )
+from cats.application.common.persistence.cat import CatFilters
+from cats.application.common.persistence.filters import Pagination
 from cats.application.queries.cat.get_cat_by_id import (
     GetCatWithIDQuery,
     GetCatWithIDQueryHandler,
@@ -35,9 +38,11 @@ router = APIRouter(prefix="/cats", tags=["Cats"], route_class=DishkaRoute)
 
 @router.get("/", summary="Get all cats")
 async def get_all(
-    query_data: GetCatsQuery, interactor: FromDishka[GetCatsQueryHandler]
+    interactor: FromDishka[GetCatsQueryHandler],
+    filters: Annotated[CatFilters, Query()],
+    pagination: Annotated[Pagination, Query()],
 ) -> list[Cat]:
-    return await interactor.run(query_data)
+    return await interactor.run(GetCatsQuery(filters, pagination))
 
 
 @router.get("/breed/{breed}", summary="Get cats by breed")

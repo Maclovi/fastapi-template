@@ -28,7 +28,7 @@ class Config:
     api: APIConfig
 
 
-def load_config() -> Config:
+def load_configs() -> Config:
     return Config(
         db=PostgresConfig(
             user=env["POSTGRES_USER"],

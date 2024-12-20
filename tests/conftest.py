@@ -9,7 +9,7 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 
 from cats.adapters.database.models import metadata
-from cats.web import create_app
+from cats.web import create_app_production
 
 
 @pytest.fixture(scope="session")
@@ -18,7 +18,7 @@ def app() -> FastAPI:
         "postgresql+psycopg://postgres:postgres@localhost:5432/postgres"
     )
     os.environ["SQLALCHEMY_DEBUG"] = "true"
-    return create_app()
+    return create_app_production()
 
 
 @pytest.fixture(scope="session")

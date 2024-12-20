@@ -2,10 +2,7 @@ services:
   postgres:
     image: postgres:alpine
     restart: unless-stopped
-    environment:
-      - POSTGRES_DB=defaultdb
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+    env_file: ".env"
     ports:
       - 127.0.0.1:5432:5432
     volumes:
@@ -16,20 +13,18 @@ services:
       timeout: 5s
       retries: 5
 
-  backend:
+  web-backend:
     build: .
     restart: unless-stopped
-    environment:
-      - POSTGRES_URI=postgresql+psycopg://postgres:postgres@postgres:5432/defaultdb
+    env_file: ".env"
     command: >
       bash -c "alembic upgrade head
-      && uvicorn --factory cats.web:create_app --host 0.0.0.0 --port 8000"
+      && --factory cats.web:create_app --host $UVICORN_HOST --port $UVICORN_PORT"
     ports:
-      - 127.0.0.1:8000:8000
+      - 127.0.0.1:8080:8080
     depends_on:
       postgres:
         condition: service_healthy
-
 
 volumes:
   postgres:

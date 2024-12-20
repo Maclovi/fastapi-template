@@ -1,10 +1,4 @@
-from dishka import (
-    AnyOf,
-    AsyncContainer,
-    Provider,
-    Scope,
-    make_async_container,
-)
+from dishka import AnyOf, Provider, Scope
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from cats.application.commands.cat.add_cat import AddCatCommandHandler
@@ -26,11 +20,7 @@ from cats.application.queries.cat.get_cats_by_breed import (
 from cats.entities.breed.services import BreedService
 from cats.entities.cat.services import CatService
 from cats.entities.common.tracker import Tracker
-from cats.infrastructure.bootstrap.configs import (
-    APIConfig,
-    PostgresConfig,
-    load_config,
-)
+from cats.infrastructure.bootstrap.configs import APIConfig, PostgresConfig
 from cats.infrastructure.gateways.breed import BreedMapper
 from cats.infrastructure.gateways.cat import CatMapper
 from cats.infrastructure.persistence.db_provider import (
@@ -42,11 +32,10 @@ from cats.infrastructure.persistence.tracker import SATracker
 
 
 def configs_provider() -> Provider:
-    config = load_config()
-    proviver = Provider(scope=Scope.APP)
-    proviver.provide(lambda: config.db, provides=PostgresConfig)
-    proviver.provide(lambda: config.api, provides=APIConfig)
-    return proviver
+    provider = Provider()
+    provider.from_context(provides=APIConfig, scope=Scope.APP)
+    provider.from_context(provides=PostgresConfig, scope=Scope.APP)
+    return provider
 
 
 def db_provider() -> Provider:
@@ -97,8 +86,3 @@ def setup_providers() -> tuple[Provider, ...]:
         services_provider(),
         interactors_provider(),
     )
-
-
-def init_async_container() -> AsyncContainer:
-    providers = setup_providers()
-    return make_async_container(*providers)

@@ -4,7 +4,7 @@ from cats.entities.common.errors import FieldError
 
 
 @dataclass(eq=False)
-class TitlelengthError(FieldError):
+class BreedNamelengthError(FieldError):
     length: int
 
     @property

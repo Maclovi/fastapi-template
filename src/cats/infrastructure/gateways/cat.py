@@ -33,7 +33,7 @@ class CatMapper(CatGateway):
                 cats_table.c.breed_id == breeds_table.c.breed_id,
                 isouter=True,
             )
-            .where(breeds_table.c.name == breed_name)
+            .where(breeds_table.c.breed_name == breed_name.value)
         )
         if pagination.offset:
             stmt = stmt.offset(pagination.offset)
@@ -49,7 +49,7 @@ class CatMapper(CatGateway):
         if filters.breed_id:
             stmt = stmt.where(cats_table.c.breed_id == filters.breed_id)
         if filters.color:
-            stmt = stmt.where(cats_table.c.color == filters.color)
+            stmt = stmt.where(cats_table.c.cat_color == filters.color)
         if pagination.offset:
             stmt = stmt.offset(pagination.offset)
         if pagination.limit:

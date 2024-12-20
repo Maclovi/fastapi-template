@@ -1,14 +1,14 @@
-import os
 from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
+from cats.infrastructure.bootstrap.configs import load_configs
 from cats.infrastructure.persistence.models.base import metadata
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
-db_uri = os.environ["POSTGRES_URI"]
+db_uri = load_configs().db.uri
 config = context.config
 config.set_main_option("sqlalchemy.url", db_uri)
 

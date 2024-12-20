@@ -9,7 +9,7 @@ breeds_table = sa.Table(
     "breeds",
     mapper_registry.metadata,
     sa.Column("breed_id", sa.BigInteger, primary_key=True, autoincrement=True),
-    sa.Column("name", sa.String(50), nullable=False, unique=True),
+    sa.Column("breed_name", sa.String(50), nullable=False, unique=True),
     sa.Column(
         "created_at",
         sa.DateTime,
@@ -36,6 +36,6 @@ def map_breed_table() -> None:
         properties={
             "oid": breeds_table.c.breed_id,
             "cats": relationship("Cat", back_populates="breed"),
-            "name": composite(BreedName, breeds_table.c.name),
+            "name": composite(BreedName, breeds_table.c.breed_name),
         },
     )

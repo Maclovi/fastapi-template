@@ -4,7 +4,7 @@ from cats.entities.common.errors import FieldError
 
 
 @dataclass(eq=False)
-class AgeMaxError(FieldError):
+class CatAgeMaxError(FieldError):
     age: int
 
     @property
@@ -13,7 +13,7 @@ class AgeMaxError(FieldError):
 
 
 @dataclass(eq=False)
-class ColorLengthError(FieldError):
+class CatColorLengthError(FieldError):
     length: int
 
     @property
@@ -22,7 +22,7 @@ class ColorLengthError(FieldError):
 
 
 @dataclass(eq=False)
-class DescriptionLengthError(FieldError):
+class CatDescriptionLengthError(FieldError):
     length: int
 
     @property

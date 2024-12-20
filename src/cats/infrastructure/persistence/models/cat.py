@@ -9,9 +9,9 @@ cats_table = sa.Table(
     "cats",
     mapper_registry.metadata,
     sa.Column("cat_id", sa.BigInteger, primary_key=True, autoincrement=True),
-    sa.Column("age", sa.Integer, nullable=False),
-    sa.Column("color", sa.String(50), nullable=False),
-    sa.Column("description", sa.String(1000), nullable=False),
+    sa.Column("cat_age", sa.Integer, nullable=False),
+    sa.Column("cat_color", sa.String(50), nullable=False),
+    sa.Column("cat_description", sa.String(1000), nullable=False),
     sa.Column(
         "breed_id",
         sa.BigInteger,
@@ -46,8 +46,10 @@ def map_cat_table() -> None:
             "breed": relationship(
                 "Breed", back_populates="cats", lazy="joined"
             ),
-            "age": composite(CatAge, cats_table.c.age),
-            "color": composite(CatColor, cats_table.c.color),
-            "description": composite(CatDescription, cats_table.c.description),
+            "age": composite(CatAge, cats_table.c.cat_age),
+            "color": composite(CatColor, cats_table.c.cat_color),
+            "description": composite(
+                CatDescription, cats_table.c.cat_description
+            ),
         },
     )

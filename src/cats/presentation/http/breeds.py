@@ -3,6 +3,7 @@ from logging import getLogger
 from dishka.integrations.fastapi import DishkaRoute, FromDishka
 from fastapi import APIRouter
 
+from cats.application.common.persistence.filters import Pagination
 from cats.application.queries.breed.get_breeds import (
     GetBreedsQuery,
     GetBreedsQueryHandler,
@@ -15,7 +16,8 @@ router = APIRouter(prefix="/breeds", tags=["Breeds"], route_class=DishkaRoute)
 
 @router.get("/")
 async def get_all_breeds(
-    query_data: GetBreedsQuery,
     interactor: FromDishka[GetBreedsQueryHandler],
+    offset: int | None = None,
+    limit: int | None = None,
 ) -> list[Breed]:
-    return await interactor.run(query_data)
+    return await interactor.run(GetBreedsQuery(Pagination(offset, limit)))

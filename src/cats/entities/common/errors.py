@@ -5,21 +5,28 @@ from dataclasses import dataclass
 class DomainError(Exception):
     @property
     def message(self) -> str:
-        return "Domain Error"
+        return "Domain error"
 
     def __str__(self) -> str:
         return self.message
 
 
 @dataclass(eq=False)
-class EntityError(DomainError):
-    @property
-    def message(self) -> str:
-        return "Entities are not equivalent"
-
-
-@dataclass(eq=False)
 class FieldError(DomainError):
     @property
     def message(self) -> str:
-        return "Field Error"
+        return "Field error"
+
+
+@dataclass(eq=False)
+class EntityError(DomainError):
+    @property
+    def message(self) -> str:
+        return "Entity error"
+
+
+@dataclass(eq=False)
+class InsertProcessingError(EntityError):
+    @property
+    def message(self) -> str:
+        return "Insert processing error"
