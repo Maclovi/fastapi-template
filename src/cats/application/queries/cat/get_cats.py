@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from cats.application.common.interactor import Interactor
 from cats.application.common.persistence.cat import CatFilters, CatGateway
@@ -8,8 +8,8 @@ from cats.entities.cat.models import Cat
 
 @dataclass(frozen=True, slots=True)
 class GetCatsQuery:
-    filters: CatFilters = field(default_factory=CatFilters)
-    pagination: Pagination = field(default_factory=Pagination)
+    filters: CatFilters
+    pagination: Pagination
 
 
 class GetCatsQueryHandler(Interactor[GetCatsQuery, list[Cat]]):

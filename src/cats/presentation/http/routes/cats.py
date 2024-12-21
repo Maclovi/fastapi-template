@@ -2,7 +2,7 @@ from logging import getLogger
 from typing import Annotated
 
 from dishka.integrations.fastapi import DishkaRoute, FromDishka
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Path, Query, status
 
 from cats.application.commands.cat.add_cat import (
     AddCatCommand,
@@ -31,37 +31,58 @@ from cats.application.queries.cat.get_cats_by_breed import (
     GetCatsWithBreedQueryHandler,
 )
 from cats.entities.cat.models import Cat
+from cats.presentation.http.common.schemes import (
+    CatsAllSchema,
+    CatsWithBreedSchema,
+    ExceptionSchema,
+)
 
 logger = getLogger(__name__)
 router = APIRouter(prefix="/cats", tags=["Cats"], route_class=DishkaRoute)
 
 
-@router.get("/", summary="Get all cats")
+@router.get("/", summary="Get all cats", status_code=status.HTTP_200_OK)
 async def get_all(
+    query: Annotated[CatsAllSchema, Query()],
     interactor: FromDishka[GetCatsQueryHandler],
-    filters: Annotated[CatFilters, Query()],
-    pagination: Annotated[Pagination, Query()],
 ) -> list[Cat]:
-    return await interactor.run(GetCatsQuery(filters, pagination))
+    dto = GetCatsQuery(
+        CatFilters(query.breed_id, query.color),
+        Pagination(query.offset, query.limit, query.order),
+    )
+    return await interactor.run(dto)
 
 
-@router.get("/breed/{breed}", summary="Get cats by breed")
+@router.get(
+    "/breed/{breed}",
+    summary="Get cats by breed",
+    status_code=status.HTTP_200_OK,
+)
 async def get_by_breed(
-    query_data: GetCatsWithBreedQuery,
+    query: Annotated[CatsWithBreedSchema, Query()],
     intteractor: FromDishka[GetCatsWithBreedQueryHandler],
 ) -> list[Cat]:
-    return await intteractor.run(query_data)
+    dto = GetCatsWithBreedQuery(
+        query.breed,
+        Pagination(query.offset, query.limit, query.order),
+    )
+    return await intteractor.run(dto)
 
 
-@router.get("/{id}", summary="Get cat by id")
+@router.get(
+    "/{id}",
+    summary="Get cat by id",
+    status_code=status.HTTP_200_OK,
+    responses={status.HTTP_404_NOT_FOUND: {"detail": ExceptionSchema}},
+)
 async def get_by_id(
-    query_data: GetCatWithIDQuery,
+    id: Annotated[int, Path()],
     interactor: FromDishka[GetCatWithIDQueryHandler],
 ) -> Cat:
-    return await interactor.run(query_data)
+    return await interactor.run(GetCatWithIDQuery(id))
 
 
-@router.post("/add", summary="Add cat")
+@router.post("/add", summary="Add cat", status_code=status.HTTP_201_CREATED)
 async def add(
     command_data: AddCatCommand,
     interactor: FromDishka[AddCatCommandHandler],
@@ -69,7 +90,12 @@ async def add(
     return await interactor.run(command_data)
 
 
-@router.put("/update_description/{cat_id}", summary="Update cat")
+@router.patch(
+    "/update_description/{cat_id}",
+    summary="Update cat",
+    status_code=status.HTTP_200_OK,
+    responses={status.HTTP_404_NOT_FOUND: {"model": ExceptionSchema}},
+)
 async def update_description(
     command_data: UpdateCatDescriptionCommand,
     interactor: FromDishka[UpdateCatDescriptionCommandHandler],
@@ -78,7 +104,12 @@ async def update_description(
     return {"message": "cat updated"}
 
 
-@router.delete("/delete/{id}", summary="Delete cat by id")
+@router.delete(
+    "/delete/{id}",
+    summary="Delete cat by id",
+    status_code=status.HTTP_200_OK,
+    responses={status.HTTP_404_NOT_FOUND: {"model": ExceptionSchema}},
+)
 async def delete_by_id(
     command_data: DeleteCatCommand,
     interactor: FromDishka[DeleteCatCommandHandler],

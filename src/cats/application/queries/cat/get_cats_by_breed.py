@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from cats.application.common.interactor import Interactor
 from cats.application.common.persistence.cat import CatGateway
@@ -10,7 +10,7 @@ from cats.entities.cat.models import Cat
 @dataclass(frozen=True, slots=True)
 class GetCatsWithBreedQuery:
     breed_name: str
-    pagination: Pagination = field(default_factory=Pagination)
+    pagination: Pagination
 
 
 class GetCatsWithBreedQueryHandler(

@@ -9,7 +9,7 @@ class CatAgeMaxError(FieldError):
 
     @property
     def message(self) -> str:
-        return f"Max age should be a less rhan {self.age!r}"
+        return f"Max age should be a less than {self.age!r}"
 
 
 @dataclass(eq=False)

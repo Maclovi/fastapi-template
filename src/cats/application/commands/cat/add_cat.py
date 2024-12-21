@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from cats.application.common.interactor import Interactor
 from cats.application.common.persistence.breed import BreedGateway
@@ -16,7 +16,7 @@ class AddCatCommand:
     age: int
     color: str
     description: str
-    breed_name: str | None = field(default=None)
+    breed_name: str | None
 
 
 class AddCatCommandHandler(Interactor[AddCatCommand, CatID]):

@@ -6,10 +6,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from cats.application.common.errors.base import EntityNotFoundError
-from cats.entities.common.errors import (
-    DomainError,
-    FieldError,
-)
+from cats.entities.common.errors import EntityError, FieldError
 
 if TYPE_CHECKING:
     from fastapi import FastAPI
@@ -26,8 +23,8 @@ async def _validate(_: Request, exc: Exception, status: int) -> JSONResponse:
 
 def setup_exc_handlers(app: "FastAPI") -> None:
     app.add_exception_handler(
-        DomainError,
-        part(_validate, status=code.HTTP_503_SERVICE_UNAVAILABLE),
+        EntityError,
+        part(_validate, status=code.HTTP_500_INTERNAL_SERVER_ERROR),
     )
     app.add_exception_handler(
         FieldError,

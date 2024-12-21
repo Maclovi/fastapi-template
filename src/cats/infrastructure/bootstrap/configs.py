@@ -23,13 +23,13 @@ class APIConfig:
 
 
 @dataclass(frozen=True, slots=True)
-class Config:
+class Configs:
     db: PostgresConfig
     api: APIConfig
 
 
-def load_configs() -> Config:
-    return Config(
+def load_configs() -> Configs:
+    return Configs(
         db=PostgresConfig(
             user=env["POSTGRES_USER"],
             password=env["POSTGRES_PASSWORD"],

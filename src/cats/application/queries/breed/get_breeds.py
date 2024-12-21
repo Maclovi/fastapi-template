@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from cats.application.common.interactor import Interactor
 from cats.application.common.persistence.breed import BreedGateway
@@ -8,7 +8,7 @@ from cats.entities.breed.models import Breed
 
 @dataclass(frozen=True)
 class GetBreedsQuery:
-    pagination: Pagination = field(default_factory=Pagination)
+    pagination: Pagination
 
 
 class GetBreedsQueryHandler(Interactor[GetBreedsQuery, list[Breed]]):

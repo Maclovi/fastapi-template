@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from dishka import make_async_container
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
+from fastapi.responses import ORJSONResponse
 
 from cats.infrastructure.bootstrap.configs import (
     APIConfig,
@@ -14,9 +15,9 @@ from cats.infrastructure.bootstrap.configs import (
 from cats.infrastructure.bootstrap.ioc import setup_providers
 from cats.infrastructure.bootstrap.log import setup_logger
 from cats.infrastructure.persistence.models import map_tables
-from cats.presentation.http import setup_routes
-from cats.presentation.http.exc_handlers import setup_exc_handlers
+from cats.presentation.http.common.exc_handlers import setup_exc_handlers
 from cats.presentation.http.middlewares import setup_middlewares
+from cats.presentation.http.routes import setup_routes
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +29,7 @@ async def lifespan(app: FastAPI, /) -> AsyncIterator[None]:
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(lifespan=lifespan)
+    app = FastAPI(lifespan=lifespan, default_response_class=ORJSONResponse)
     configs = load_configs()
     context = {APIConfig: configs.api, PostgresConfig: configs.db}
     container = make_async_container(*setup_providers(), context=context)
